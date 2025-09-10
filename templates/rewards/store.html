@@ -1,0 +1,211 @@
+{% extends 'base.html' %}
+
+{% block title %}Rewards Store - EcoLearning Platform{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h1><i class="fas fa-gift text-warning"></i> Rewards Store</h1>
+                    <p class="lead">Spend your eco-tokens on amazing rewards!</p>
+                </div>
+                {% if user.is_authenticated %}
+                    <div class="text-end">
+                        <div class="token-badge fs-4">
+                            <i class="fas fa-coins"></i> {{ user.total_eco_tokens }}
+                        </div>
+                        <small class="text-muted d-block">Your Balance</small>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Filter Categories -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="btn-group" role="group">
+                <input type="radio" class="btn-check" name="category" id="all" autocomplete="off" checked>
+                <label class="btn btn-outline-secondary" for="all">All Items</label>
+                
+                <input type="radio" class="btn-check" name="category" id="discount" autocomplete="off">
+                <label class="btn btn-outline-primary" for="discount">Discounts</label>
+                
+                <input type="radio" class="btn-check" name="category" id="badge" autocomplete="off">
+                <label class="btn btn-outline-success" for="badge">Badges</label>
+                
+                <input type="radio" class="btn-check" name="category" id="certificate" autocomplete="off">
+                <label class="btn btn-outline-info" for="certificate">Certificates</label>
+                
+                <input type="radio" class="btn-check" name="category" id="donation" autocomplete="off">
+                <label class="btn btn-outline-warning" for="donation">Donations</label>
+                
+                <input type="radio" class="btn-check" name="category" id="merchandise" autocomplete="off">
+                <label class="btn btn-outline-danger" for="merchandise">Merchandise</label>
+            </div>
+        </div>
+    </div>
+
+    <!-- Rewards Grid -->
+    <div class="row" id="rewardsGrid">
+        {% for item in reward_items %}
+            <div class="col-md-6 col-lg-4 mb-4 reward-item" data-category="{{ item.item_type }}" data-cost="{{ item.cost_tokens }}">
+                <div class="eco-card h-100">
+                    {% if item.image %}
+                        <img src="{{ item.image.url }}" class="card-img-top" style="height: 200px; object-fit: cover;" alt="{{ item.name }}">
+                    {% else %}
+                        <div class="card-img-top d-flex align-items-center justify-content-center bg-light" style="height: 200px;">
+                            {% if item.item_type == 'discount' %}
+                                <i class="fas fa-percent fa-4x text-primary"></i>
+                            {% elif item.item_type == 'badge' %}
+                                <i class="fas fa-award fa-4x text-success"></i>
+                            {% elif item.item_type == 'certificate' %}
+                                <i class="fas fa-certificate fa-4x text-info"></i>
+                            {% elif item.item_type == 'donation' %}
+                                <i class="fas fa-heart fa-4x text-danger"></i>
+                            {% elif item.item_type == 'tree_planting' %}
+                                <i class="fas fa-tree fa-4x text-success"></i>
+                            {% else %}
+                                <i class="fas fa-gift fa-4x text-warning"></i>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                    
+                    <div class="card-body d-flex flex-column">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <h6 class="card-title">{{ item.name }}</h6>
+                            <span class="badge bg-secondary">{{ item.get_item_type_display }}</span>
+                        </div>
+                        
+                        <p class="card-text flex-grow-1">{{ item.description|truncatewords:20 }}</p>
+                        
+                        <!-- Cost and Requirements -->
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span class="token-badge">
+                                    <i class="fas fa-coins"></i> {{ item.cost_tokens }}
+                                </span>
+                                {% if item.min_level_required > 1 %}
+                                    <span class="level-badge small">Level {{ item.min_level_required }}+</span>
+                                {% endif %}
+                            </div>
+                            
+                            {% if item.stock_quantity %}
+                                <small class="text-muted">
+                                    <i class="fas fa-box"></i> {{ item.stock_quantity }} left
+                                </small>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Purchase Button -->
+                        <div class="mt-auto">
+                            {% if user.is_authenticated %}
+                                {% with can_purchase=item.can_user_purchase:user %}
+                                    {% if can_purchase.0 %}
+                                        <button class="btn btn-eco w-100" onclick="purchaseItem({{ item.id }}, '{{ item.name }}', {{ item.cost_tokens }})">
+                                            <i class="fas fa-shopping-cart"></i> Purchase
+                                        </button>
+                                    {% else %}
+                                        <button class="btn btn-secondary w-100" disabled title="{{ can_purchase.1 }}">
+                                            <i class="fas fa-lock"></i> {{ can_purchase.1 }}
+                                        </button>
+                                    {% endif %}
+                                {% endwith %}
+                            {% else %}
+                                <a href="{% url 'accounts:login' %}" class="btn btn-outline-primary w-100">
+                                    <i class="fas fa-sign-in-alt"></i> Login to Purchase
+                                </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% empty %}
+            <div class="col-12 text-center">
+                <i class="fas fa-gift fa-4x text-muted mb-4"></i>
+                <h3>No Rewards Available</h3>
+                <p class="text-muted">Rewards will appear here once they're added by administrators.</p>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- Purchase Confirmation Modal -->
+<div class="modal fade" id="purchaseModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Confirm Purchase</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="text-center mb-3">
+                    <i class="fas fa-gift fa-3x text-warning mb-3"></i>
+                    <h5 id="itemName">Item Name</h5>
+                </div>
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <span>Cost:</span>
+                    <span class="token-badge" id="itemCost">0 tokens</span>
+                </div>
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <span>Your Balance:</span>
+                    <span class="token-badge">{{ user.total_eco_tokens }} tokens</span>
+                </div>
+                <div class="d-flex justify-content-between align-items-center">
+                    <span><strong>Balance After:</strong></span>
+                    <span class="fw-bold" id="balanceAfter">0 tokens</span>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <form method="post" id="purchaseForm">
+                    {% csrf_token %}
+                    <input type="hidden" name="reward_item_id" id="rewardItemId">
+                    <button type="submit" class="btn btn-eco">
+                        <i class="fas fa-check"></i> Confirm Purchase
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Filter functionality
+    const categoryFilters = document.querySelectorAll('input[name="category"]');
+    const rewardItems = document.querySelectorAll('.reward-item');
+    
+    categoryFilters.forEach(filter => {
+        filter.addEventListener('change', function() {
+            const selectedCategory = this.id;
+            
+            rewardItems.forEach(item => {
+                if (selectedCategory === 'all' || item.dataset.category === selectedCategory) {
+                    item.style.display = 'block';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        });
+    });
+});
+
+function purchaseItem(itemId, itemName, itemCost) {
+    const userBalance = {{ user.total_eco_tokens|default:0 }};
+    const balanceAfter = userBalance - itemCost;
+    
+    document.getElementById('itemName').textContent = itemName;
+    document.getElementById('itemCost').innerHTML = `<i class="fas fa-coins"></i> ${itemCost}`;
+    document.getElementById('balanceAfter').textContent = `${balanceAfter} tokens`;
+    document.getElementById('rewardItemId').value = itemId;
+    
+    const modal = new bootstrap.Modal(document.getElementById('purchaseModal'));
+    modal.show();
+}
+</script>
+{% endblock %}

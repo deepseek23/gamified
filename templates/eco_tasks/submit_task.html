@@ -1,0 +1,191 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}Submit {{ task.title }} - EcoLearning Platform{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <!-- Task Header -->
+            <div class="eco-card p-4 mb-4">
+                <h2><i class="fas fa-upload"></i> Submit Your Task</h2>
+                <h4>{{ task.title }}</h4>
+                <p class="text-muted">{{ task.category.name }}</p>
+                
+                <!-- Verification Requirements -->
+                <div class="alert alert-info">
+                    <h6><i class="fas fa-info-circle"></i> Submission Requirements</h6>
+                    <p><strong>Method:</strong> {{ task.get_verification_method_display }}</p>
+                    <p class="mb-0">{{ task.verification_instructions }}</p>
+                </div>
+            </div>
+
+            <!-- Submission Form -->
+            <div class="eco-card p-4">
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    
+                    <!-- Text Description -->
+                    <div class="mb-4">
+                        <label for="submission_text" class="form-label">
+                            <i class="fas fa-pen"></i> Describe what you did
+                        </label>
+                        <textarea class="form-control" id="submission_text" name="submission_text" rows="5" 
+                                  placeholder="Tell us about your eco-task experience. What did you do? What did you learn? What impact did you make?"
+                                  required>{{ user_task.submission_text }}</textarea>
+                        <div class="form-text">Provide a detailed description of your task completion.</div>
+                    </div>
+                    
+                    <!-- Photo Upload -->
+                    {% if task.verification_method == 'photo' or task.verification_method == 'video' %}
+                    <div class="mb-4">
+                        <label for="submission_image" class="form-label">
+                            <i class="fas fa-camera"></i> Upload Photo Evidence
+                        </label>
+                        <input type="file" class="form-control" id="submission_image" name="submission_image" 
+                               accept="image/*" {% if task.verification_method == 'photo' %}required{% endif %}>
+                        <div class="form-text">Upload a clear photo showing your completed task.</div>
+                        
+                        {% if user_task.submission_image %}
+                            <div class="mt-2">
+                                <small class="text-muted">Current image:</small>
+                                <img src="{{ user_task.submission_image.url }}" class="img-thumbnail mt-1" style="max-height: 200px;" alt="Current submission">
+                            </div>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+                    
+                    <!-- Video Upload -->
+                    {% if task.verification_method == 'video' %}
+                    <div class="mb-4">
+                        <label for="submission_video" class="form-label">
+                            <i class="fas fa-video"></i> Upload Video (Optional)
+                        </label>
+                        <input type="file" class="form-control" id="submission_video" name="submission_video" 
+                               accept="video/*">
+                        <div class="form-text">Upload a video showing your task completion (optional but recommended).</div>
+                        
+                        {% if user_task.submission_video %}
+                            <div class="mt-2">
+                                <small class="text-muted">Current video uploaded</small>
+                            </div>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+                    
+                    <!-- Checklist Items -->
+                    {% if task.verification_method == 'checklist' %}
+                    <div class="mb-4">
+                        <label class="form-label">
+                            <i class="fas fa-check-square"></i> Task Checklist
+                        </label>
+                        <div class="border rounded p-3">
+                            <!-- This would be dynamically generated based on task requirements -->
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="checkbox" id="check1" name="checklist_items" value="item1" required>
+                                <label class="form-check-label" for="check1">
+                                    I completed all required steps
+                                </label>
+                            </div>
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="checkbox" id="check2" name="checklist_items" value="item2" required>
+                                <label class="form-check-label" for="check2">
+                                    I followed safety guidelines
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="check3" name="checklist_items" value="item3" required>
+                                <label class="form-check-label" for="check3">
+                                    I documented my impact
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    <!-- Additional Notes -->
+                    <div class="mb-4">
+                        <label for="additional_notes" class="form-label">
+                            <i class="fas fa-sticky-note"></i> Additional Notes (Optional)
+                        </label>
+                        <textarea class="form-control" id="additional_notes" name="additional_notes" rows="3" 
+                                  placeholder="Any additional thoughts, challenges, or insights?"></textarea>
+                    </div>
+                    
+                    <!-- Submission Buttons -->
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <a href="{% url 'eco_tasks:task_detail' task.id %}" class="btn btn-outline-secondary me-md-2">
+                            <i class="fas fa-arrow-left"></i> Back to Task
+                        </a>
+                        <button type="submit" name="save_draft" class="btn btn-outline-primary me-md-2">
+                            <i class="fas fa-save"></i> Save Draft
+                        </button>
+                        <button type="submit" name="submit_final" class="btn btn-eco">
+                            <i class="fas fa-paper-plane"></i> Submit for Review
+                        </button>
+                    </div>
+                </form>
+            </div>
+            
+            <!-- Submission Tips -->
+            <div class="eco-card p-4 mt-4">
+                <h5><i class="fas fa-lightbulb"></i> Submission Tips</h5>
+                <ul class="mb-0">
+                    <li>Be specific and detailed in your description</li>
+                    <li>Include clear, well-lit photos if required</li>
+                    <li>Mention any challenges you faced and how you overcame them</li>
+                    <li>Describe the environmental impact of your actions</li>
+                    <li>Share what you learned from this experience</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Image preview functionality
+    const imageInput = document.getElementById('submission_image');
+    if (imageInput) {
+        imageInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    // Remove existing preview
+                    const existingPreview = document.getElementById('imagePreview');
+                    if (existingPreview) {
+                        existingPreview.remove();
+                    }
+                    
+                    // Create new preview
+                    const preview = document.createElement('div');
+                    preview.id = 'imagePreview';
+                    preview.className = 'mt-2';
+                    preview.innerHTML = `
+                        <small class="text-muted">Preview:</small>
+                        <img src="${e.target.result}" class="img-thumbnail mt-1" style="max-height: 200px;" alt="Preview">
+                    `;
+                    imageInput.parentNode.appendChild(preview);
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+    }
+    
+    // Form validation
+    const form = document.querySelector('form');
+    form.addEventListener('submit', function(e) {
+        const textArea = document.getElementById('submission_text');
+        if (textArea.value.trim().length < 50) {
+            e.preventDefault();
+            alert('Please provide a more detailed description (at least 50 characters).');
+            textArea.focus();
+        }
+    });
+});
+</script>
+{% endblock %}

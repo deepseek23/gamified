@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Quiz Categories - Eco Learning Platform{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1 class="h2 text-success">
+                    <i class="fas fa-brain me-2"></i>
+                    Quiz Categories
+                </h1>
+                {% if user.is_authenticated %}
+                <div class="d-flex align-items-center">
+                    <span class="badge bg-primary me-2">
+                        <i class="fas fa-coins me-1"></i>
+                        {{ user.total_eco_tokens|default:0 }} Tokens
+                    </span>
+                    <span class="badge bg-info">
+                        <i class="fas fa-star me-1"></i>
+                        Level {{ user.level|default:1 }}
+                    </span>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Featured Quizzes Section -->
+    <div class="row mb-5">
+        <div class="col-12">
+            <h3 class="h4 mb-3">
+                <i class="fas fa-fire text-warning me-2"></i>
+                Featured Quizzes
+            </h3>
+            <div class="row">
+                {% for category in categories %}
+                    {% for quiz in category.quizzes.all %}
+                        {% if quiz.is_featured %}
+                        <div class="col-md-6 col-lg-4 mb-3">
+                            <div class="card border-warning">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-start mb-2">
+                                        <h5 class="card-title text-warning">{{ quiz.title }}</h5>
+                                        <span class="badge bg-warning">Featured</span>
+                                    </div>
+                                    <p class="card-text text-muted small">{{ quiz.description|truncatewords:15 }}</p>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <span class="badge bg-success me-1">
+                                                <i class="fas fa-coins me-1"></i>{{ quiz.base_tokens_reward }} tokens
+                                            </span>
+                                            <span class="badge bg-info">{{ quiz.get_difficulty_display }}</span>
+                                        </div>
+                                        <a href="{% url 'quizzes:detail' quiz.id %}" class="btn btn-warning btn-sm">Start Quiz</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+                    {% endfor %}
+                {% empty %}
+                <div class="col-12">
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle me-2"></i>
+                        No featured quizzes available at the moment.
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Quiz Categories -->
+    <div class="row">
+        <div class="col-12">
+            <h3 class="h4 mb-3">All Categories</h3>
+        </div>
+        {% for category in categories %}
+        <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card h-100 category-card" style="border-left: 4px solid {{ category.color }};">
+                <div class="card-body">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="category-icon me-3">{{ category.icon }}</div>
+                        <h5 class="card-title mb-0">{{ category.name }}</h5>
+                    </div>
+                    <p class="card-text text-muted">{{ category.description }}</p>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <small class="text-muted">{{ category.quizzes.count }} quiz{{ category.quizzes.count|pluralize:"es" }} available</small>
+                        <a href="{% url 'quizzes:category_list' category.id %}" class="btn btn-outline-primary btn-sm">Explore</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="alert alert-info">
+                <i class="fas fa-info-circle me-2"></i>
+                No quiz categories available at the moment. Check back later!
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

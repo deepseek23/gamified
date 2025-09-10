@@ -1,0 +1,196 @@
+{% extends 'base.html' %}
+
+{% block title %}Home - EcoLearning Platform{% endblock %}
+
+{% block content %}
+<div class="container">
+    <!-- Hero Section -->
+    <div class="row mb-5">
+        <div class="col-12">
+            <div class="eco-card bg-gradient text-white p-5 text-center" style="background: linear-gradient(135deg, var(--eco-green), var(--eco-blue));">
+                <h1 class="display-4 mb-3 text-success">🌱 Welcome to EcoLearning!</h1>
+                <p class="lead mb-4 text-success">Make environmental education engaging and action-driven through gamified learning, real-world eco-tasks, and rewards.</p>
+                {% if not user.is_authenticated %}
+                    <a href="{% url 'accounts:register' %}" class="btn btn-light btn-lg me-3">
+                        <i class="fas fa-user-plus"></i> Join the Movement
+                    </a>
+                    <a href="{% url 'accounts:login' %}" class="btn btn-outline-light btn-lg">
+                        <i class="fas fa-sign-in-alt"></i> Login
+                    </a>
+                {% else %}
+                    <a href="{% url 'accounts:dashboard' %}" class="btn btn-light btn-lg">
+                        <i class="fas fa-chart-line"></i> View Dashboard
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    {% if user.is_authenticated %}
+    <!-- User Dashboard Preview -->
+    <div class="row mb-5">
+        <div class="col-md-3">
+            <div class="eco-card p-4 text-center">
+                <div class="display-4 text-primary mb-2">
+                    <i class="fas fa-star"></i>
+                </div>
+                <h5>Level {{ user.level }}</h5>
+                <div class="progress progress-eco mb-2">
+                    <div class="progress-bar progress-bar-eco" style="width: {{ user.get_level_progress }}%"></div>
+                </div>
+                <small class="text-muted">{{ user.experience_points }} XP</small>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="eco-card p-4 text-center">
+                <div class="display-4 text-warning mb-2">
+                    <i class="fas fa-coins"></i>
+                </div>
+                <h5>{{ user.total_eco_tokens }}</h5>
+                <p class="text-muted mb-0">Eco-Tokens</p>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="eco-card p-4 text-center">
+                <div class="display-4 text-success mb-2">
+                    <i class="fas fa-brain"></i>
+                </div>
+                <h5>{{ user.profile.quizzes_completed|default:0 }}</h5>
+                <p class="text-muted mb-0">Quizzes Completed</p>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="eco-card p-4 text-center">
+                <div class="display-4 text-info mb-2">
+                    <i class="fas fa-tasks"></i>
+                </div>
+                <h5>{{ user.profile.tasks_completed|default:0 }}</h5>
+                <p class="text-muted mb-0">Tasks Completed</p>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Features Section -->
+    <div class="row mb-5">
+        <div class="col-12">
+            <h2 class="text-center mb-5">🌍 Platform Features</h2>
+        </div>
+        
+        <div class="col-md-6 col-lg-3 mb-4">
+            <div class="eco-card p-4 text-center h-100">
+                <div class="display-4 text-primary mb-3"><i class="fas fa-brain"></i></div>
+                <h5>Interactive Quizzes</h5>
+                <p class="text-muted">Test your environmental knowledge with engaging quizzes and earn eco-tokens for correct answers.</p>
+                <a href="{% url 'quizzes:categories' %}" class="btn btn-eco">Explore Quizzes</a>
+            </div>
+        </div>
+        
+        <div class="col-md-6 col-lg-3 mb-4">
+            <div class="eco-card p-4 text-center h-100">
+                <div class="display-4 text-success mb-3"><i class="fas fa-leaf"></i></div>
+                <h5>Real-World Tasks</h5>
+                <p class="text-muted">Complete eco-friendly tasks in your community and make a real environmental impact.</p>
+                <a href="{% url 'eco_tasks:categories' %}" class="btn btn-eco">View Tasks</a>
+            </div>
+        </div>
+        
+        <div class="col-md-6 col-lg-3 mb-4">
+            <div class="eco-card p-4 text-center h-100">
+                <div class="display-4 text-warning mb-3"><i class="fas fa-trophy"></i></div>
+                <h5>Leaderboards</h5>
+                <p class="text-muted">Compete with peers locally and globally. See how you rank in your school and city!</p>
+                <a href="{% url 'leaderboards:home' %}" class="btn btn-eco">View Rankings</a>
+            </div>
+        </div>
+        
+        <div class="col-md-6 col-lg-3 mb-4">
+            <div class="eco-card p-4 text-center h-100">
+                <div class="display-4 text-info mb-3"><i class="fas fa-gift"></i></div>
+                <h5>Eco-Token Rewards</h5>
+                <p class="text-muted">Redeem your earned tokens for discounts, badges, and environmental donations.</p>
+                <a href="{% url 'rewards:store' %}" class="btn btn-eco">Reward Store</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- How It Works -->
+    <div class="row mb-5">
+        <div class="col-12">
+            <h2 class="text-center mb-5">🚀 How It Works</h2>
+        </div>
+        
+        <div class="col-md-4 mb-4">
+            <div class="text-center">
+                <div class="bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px;">
+                    <span class="h3 mb-0">1</span>
+                </div>
+                <h5>Learn & Quiz</h5>
+                <p class="text-muted">Take interactive quizzes on environmental topics and earn eco-tokens for your knowledge.</p>
+            </div>
+        </div>
+        
+        <div class="col-md-4 mb-4">
+            <div class="text-center">
+                <div class="bg-success text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px;">
+                    <span class="h3 mb-0">2</span>
+                </div>
+                <h5>Take Action</h5>
+                <p class="text-muted">Complete real-world eco-tasks in your community and document your environmental impact.</p>
+            </div>
+        </div>
+        
+        <div class="col-md-4 mb-4">
+            <div class="text-center">
+                <div class="bg-warning text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px;">
+                    <span class="h3 mb-0">3</span>
+                </div>
+                <h5>Earn Rewards</h5>
+                <p class="text-muted">Use your eco-tokens to unlock rewards, compete on leaderboards, and make environmental donations.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stats Section -->
+    <div class="row mb-5">
+        <div class="col-12">
+            <div class="eco-card p-5 text-center bg-light">
+                <h3 class="mb-4">🌟 Community Impact</h3>
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="h2 text-primary counter" data-target="1250">0</div>
+                        <p class="text-muted">Active Learners</p>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="h2 text-success counter" data-target="5680">0</div>
+                        <p class="text-muted">Quizzes Completed</p>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="h2 text-info counter" data-target="3420">0</div>
+                        <p class="text-muted">Eco-Tasks Done</p>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="h2 text-warning counter" data-target="89340">0</div>
+                        <p class="text-muted">Tokens Earned</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Call to Action -->
+    {% if not user.is_authenticated %}
+    <div class="row">
+        <div class="col-12">
+            <div class="eco-card p-5 text-center" style="background: linear-gradient(135deg, #20c997, #28a745);">
+                <h3 class="text-white mb-3">Ready to Make a Difference? 🌍</h3>
+                <p class="text-white mb-4">Join thousands of students already making an environmental impact through learning and action.</p>
+                <a href="{% url 'accounts:register' %}" class="btn btn-light btn-lg">
+                    <i class="fas fa-rocket"></i> Start Your Eco-Journey
+                </a>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

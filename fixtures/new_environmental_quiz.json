@@ -1,0 +1,526 @@
+[
+  {
+    "model": "quizzes.quizcategory",
+    "pk": 4,
+    "fields": {
+      "name": "Environmental Science",
+      "description": "Comprehensive environmental science topics including ecosystems, pollution, and conservation",
+      "icon": "🌍",
+      "color": "#6f42c1",
+      "is_active": true,
+      "created_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "quizzes.quiz",
+    "pk": 4,
+    "fields": {
+      "title": "Environmental Science Challenge",
+      "description": "Test your comprehensive knowledge of environmental science, including ecosystems, biodiversity, pollution, and sustainable practices. This advanced quiz covers multiple environmental topics.",
+      "category": 4,
+      "difficulty": "advanced",
+      "base_tokens_reward": 35,
+      "perfect_score_bonus": 15,
+      "time_bonus_enabled": true,
+      "max_time_minutes": 15,
+      "min_level_required": 3,
+      "is_active": true,
+      "is_featured": true,
+      "randomize_questions": true,
+      "show_correct_answers": true,
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "quizzes.quiz",
+    "pk": 5,
+    "fields": {
+      "title": "Ocean Conservation Quiz",
+      "description": "Learn about marine ecosystems, ocean pollution, and conservation efforts to protect our seas and marine life.",
+      "category": 4,
+      "difficulty": "intermediate",
+      "base_tokens_reward": 25,
+      "perfect_score_bonus": 10,
+      "time_bonus_enabled": true,
+      "max_time_minutes": 12,
+      "min_level_required": 2,
+      "is_active": true,
+      "is_featured": false,
+      "randomize_questions": false,
+      "show_correct_answers": true,
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "quizzes.question",
+    "pk": 10,
+    "fields": {
+      "quiz": 4,
+      "question_type": "multiple_choice",
+      "text": "What percentage of Earth's surface is covered by forests?",
+      "explanation": "Forests cover approximately 31% of Earth's land surface, playing a crucial role in carbon sequestration, biodiversity conservation, and climate regulation.",
+      "points": 1,
+      "order": 1,
+      "created_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "quizzes.answer",
+    "pk": 33,
+    "fields": {
+      "question": 10,
+      "text": "25%",
+      "is_correct": false,
+      "order": 1
+    }
+  },
+  {
+    "model": "quizzes.answer",
+    "pk": 34,
+    "fields": {
+      "question": 10,
+      "text": "31%",
+      "is_correct": true,
+      "order": 2
+    }
+  },
+  {
+    "model": "quizzes.answer",
+    "pk": 35,
+    "fields": {
+      "question": 10,
+      "text": "40%",
+      "is_correct": false,
+      "order": 3
+    }
+  },
+  {
+    "model": "quizzes.answer",
+    "pk": 36,
+    "fields": {
+      "question": 10,
+      "text": "15%",
+      "is_correct": false,
+      "order": 4
+    }
+  },
+  {
+    "model": "quizzes.question",
+    "pk": 11,
+    "fields": {
+      "quiz": 4,
+      "question_type": "multiple_choice",
+      "text": "Which of the following is the largest source of plastic pollution in the ocean?",
+      "explanation": "Land-based sources account for about 80% of marine plastic pollution, including rivers, coastal activities, and improper waste management systems.",
+      "points": 1,
+      "order": 2,
+      "created_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "quizzes.answer",
+    "pk": 37,
+    "fields": {
+      "question": 11,
+      "text": "Fishing nets and gear",
+      "is_correct": false,
+      "order": 1
+    }
+  },
+  {
+    "model": "quizzes.answer",
+    "pk": 38,
+    "fields": {
+      "question": 11,
+      "text": "Land-based sources (rivers, coasts)",
+      "is_correct": true,
+      "order": 2
+    }
+  },
+  {
+    "model": "quizzes.answer",
+    "pk": 39,
+    "fields": {
+      "question": 11,
+      "text": "Cruise ships and maritime transport",
+      "is_correct": false,
+      "order": 3
+    }
+  },
+  {
+    "model": "quizzes.answer",
+    "pk": 40,
+    "fields": {
+      "question": 11,
+      "text": "Offshore oil platforms",
+      "is_correct": false,
+      "order": 4
+    }
+  },
+  {
+    "model": "quizzes.question",
+    "pk": 12,
+    "fields": {
+      "quiz": 4,
+      "question_type": "true_false",
+      "text": "Biodiversity loss is occurring at a rate 100 to 1,000 times faster than the natural extinction rate.",
+      "explanation": "True. Current species extinction rates are estimated to be 100 to 1,000 times higher than natural background rates, primarily due to human activities.",
+      "points": 1,
+      "order": 3,
+      "created_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "quizzes.answer",
+    "pk": 41,
+    "fields": {
+      "question": 12,
+      "text": "True",
+      "is_correct": true,
+      "order": 1
+    }
+  },
+  {
+    "model": "quizzes.answer",
+    "pk": 42,
+    "fields": {
+      "question": 12,
+      "text": "False",
+      "is_correct": false,
+      "order": 2
+    }
+  },
+  {
+    "model": "quizzes.question",
+    "pk": 13,
+    "fields": {
+      "quiz": 4,
+      "question_type": "multiple_choice",
+      "text": "What is the primary cause of coral reef bleaching?",
+      "explanation": "Rising ocean temperatures due to climate change cause coral polyps to expel their symbiotic algae, leading to coral bleaching and potential death.",
+      "points": 1,
+      "order": 4,
+      "created_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "quizzes.answer",
+    "pk": 43,
+    "fields": {
+      "question": 13,
+      "text": "Ocean acidification",
+      "is_correct": false,
+      "order": 1
+    }
+  },
+  {
+    "model": "quizzes.answer",
+    "pk": 44,
+    "fields": {
+      "question": 13,
+      "text": "Rising ocean temperatures",
+      "is_correct": true,
+      "order": 2
+    }
+  },
+  {
+    "model": "quizzes.answer",
+    "pk": 45,
+    "fields": {
+      "question": 13,
+      "text": "Overfishing",
+      "is_correct": false,
+      "order": 3
+    }
+  },
+  {
+    "model": "quizzes.answer",
+    "pk": 46,
+    "fields": {
+      "question": 13,
+      "text": "Coastal development",
+      "is_correct": false,
+      "order": 4
+    }
+  },
+  {
+    "model": "quizzes.question",
+    "pk": 14,
+    "fields": {
+      "quiz": 4,
+      "question_type": "multiple_choice",
+      "text": "Which renewable energy source has the fastest growing capacity worldwide?",
+      "explanation": "Solar photovoltaic (PV) has been the fastest-growing renewable energy technology in recent years, with dramatic cost reductions and technological improvements.",
+      "points": 1,
+      "order": 5,
+      "created_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "quizzes.answer",
+    "pk": 47,
+    "fields": {
+      "question": 14,
+      "text": "Wind power",
+      "is_correct": false,
+      "order": 1
+    }
+  },
+  {
+    "model": "quizzes.answer",
+    "pk": 48,
+    "fields": {
+      "question": 14,
+      "text": "Solar photovoltaic",
+      "is_correct": true,
+      "order": 2
+    }
+  },
+  {
+    "model": "quizzes.answer",
+    "pk": 49,
+    "fields": {
+      "question": 14,
+      "text": "Hydroelectric power",
+      "is_correct": false,
+      "order": 3
+    }
+  },
+  {
+    "model": "quizzes.answer",
+    "pk": 50,
+    "fields": {
+      "question": 14,
+      "text": "Geothermal energy",
+      "is_correct": false,
+      "order": 4
+    }
+  },
+  {
+    "model": "quizzes.question",
+    "pk": 15,
+    "fields": {
+      "quiz": 4,
+      "question_type": "multiple_choice",
+      "text": "What is the concept of 'carbon footprint'?",
+      "explanation": "A carbon footprint measures the total greenhouse gas emissions caused directly and indirectly by an individual, organization, event, or product, usually expressed in CO2 equivalents.",
+      "points": 1,
+      "order": 6,
+      "created_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "quizzes.answer",
+    "pk": 51,
+    "fields": {
+      "question": 15,
+      "text": "The amount of carbon stored in soil",
+      "is_correct": false,
+      "order": 1
+    }
+  },
+  {
+    "model": "quizzes.answer",
+    "pk": 52,
+    "fields": {
+      "question": 15,
+      "text": "Total greenhouse gas emissions from activities",
+      "is_correct": true,
+      "order": 2
+    }
+  },
+  {
+    "model": "quizzes.answer",
+    "pk": 53,
+    "fields": {
+      "question": 15,
+      "text": "The size of a person's ecological impact",
+      "is_correct": false,
+      "order": 3
+    }
+  },
+  {
+    "model": "quizzes.answer",
+    "pk": 54,
+    "fields": {
+      "question": 15,
+      "text": "Carbon absorption by plants",
+      "is_correct": false,
+      "order": 4
+    }
+  },
+  {
+    "model": "quizzes.question",
+    "pk": 16,
+    "fields": {
+      "quiz": 4,
+      "question_type": "true_false",
+      "text": "Deforestation contributes more to global CO2 emissions than the entire transportation sector.",
+      "explanation": "False. While deforestation is a significant source of CO2 emissions (about 11% globally), the transportation sector accounts for approximately 14% of global greenhouse gas emissions.",
+      "points": 1,
+      "order": 7,
+      "created_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "quizzes.answer",
+    "pk": 55,
+    "fields": {
+      "question": 16,
+      "text": "True",
+      "is_correct": false,
+      "order": 1
+    }
+  },
+  {
+    "model": "quizzes.answer",
+    "pk": 56,
+    "fields": {
+      "question": 16,
+      "text": "False",
+      "is_correct": true,
+      "order": 2
+    }
+  },
+  {
+    "model": "quizzes.question",
+    "pk": 17,
+    "fields": {
+      "quiz": 5,
+      "question_type": "multiple_choice",
+      "text": "What percentage of the ocean has been explored by humans?",
+      "explanation": "Less than 5% of the ocean has been explored and mapped by humans, making it one of the least understood environments on Earth.",
+      "points": 1,
+      "order": 1,
+      "created_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "quizzes.answer",
+    "pk": 57,
+    "fields": {
+      "question": 17,
+      "text": "Less than 5%",
+      "is_correct": true,
+      "order": 1
+    }
+  },
+  {
+    "model": "quizzes.answer",
+    "pk": 58,
+    "fields": {
+      "question": 17,
+      "text": "About 15%",
+      "is_correct": false,
+      "order": 2
+    }
+  },
+  {
+    "model": "quizzes.answer",
+    "pk": 59,
+    "fields": {
+      "question": 17,
+      "text": "Around 25%",
+      "is_correct": false,
+      "order": 3
+    }
+  },
+  {
+    "model": "quizzes.answer",
+    "pk": 60,
+    "fields": {
+      "question": 17,
+      "text": "Nearly 50%",
+      "is_correct": false,
+      "order": 4
+    }
+  },
+  {
+    "model": "quizzes.question",
+    "pk": 18,
+    "fields": {
+      "quiz": 5,
+      "question_type": "multiple_choice",
+      "text": "Which marine animal is most affected by plastic bag pollution?",
+      "explanation": "Sea turtles often mistake plastic bags for jellyfish, their primary food source, leading to ingestion that can cause blockages and death.",
+      "points": 1,
+      "order": 2,
+      "created_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "quizzes.answer",
+    "pk": 61,
+    "fields": {
+      "question": 18,
+      "text": "Dolphins",
+      "is_correct": false,
+      "order": 1
+    }
+  },
+  {
+    "model": "quizzes.answer",
+    "pk": 62,
+    "fields": {
+      "question": 18,
+      "text": "Sea turtles",
+      "is_correct": true,
+      "order": 2
+    }
+  },
+  {
+    "model": "quizzes.answer",
+    "pk": 63,
+    "fields": {
+      "question": 18,
+      "text": "Whales",
+      "is_correct": false,
+      "order": 3
+    }
+  },
+  {
+    "model": "quizzes.answer",
+    "pk": 64,
+    "fields": {
+      "question": 18,
+      "text": "Seabirds",
+      "is_correct": false,
+      "order": 4
+    }
+  },
+  {
+    "model": "quizzes.question",
+    "pk": 19,
+    "fields": {
+      "quiz": 5,
+      "question_type": "true_false",
+      "text": "The Great Pacific Garbage Patch is twice the size of Texas.",
+      "explanation": "True. The Great Pacific Garbage Patch is estimated to be twice the size of Texas, containing at least 80,000 tons of plastic debris.",
+      "points": 1,
+      "order": 3,
+      "created_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "quizzes.answer",
+    "pk": 65,
+    "fields": {
+      "question": 19,
+      "text": "True",
+      "is_correct": true,
+      "order": 1
+    }
+  },
+  {
+    "model": "quizzes.answer",
+    "pk": 66,
+    "fields": {
+      "question": 19,
+      "text": "False",
+      "is_correct": false,
+      "order": 2
+    }
+  }
+]

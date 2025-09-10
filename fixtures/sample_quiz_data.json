@@ -1,0 +1,538 @@
+[
+  {
+    "model": "quizzes.quizcategory",
+    "pk": 1,
+    "fields": {
+      "name": "Climate Change Basics",
+      "description": "Learn the fundamentals of climate change and global warming",
+      "icon": "🌡️",
+      "color": "#dc3545",
+      "is_active": true,
+      "created_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "quizzes.quizcategory",
+    "pk": 2,
+    "fields": {
+      "name": "Renewable Energy",
+      "description": "Explore sustainable energy sources and technologies",
+      "icon": "⚡",
+      "color": "#ffc107",
+      "is_active": true,
+      "created_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "quizzes.quizcategory",
+    "pk": 3,
+    "fields": {
+      "name": "Waste Management",
+      "description": "Understanding recycling, composting, and waste reduction",
+      "icon": "♻️",
+      "color": "#28a745",
+      "is_active": true,
+      "created_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "quizzes.quiz",
+    "pk": 1,
+    "fields": {
+      "title": "Climate Change Fundamentals",
+      "description": "Test your knowledge about the basics of climate change, its causes, and effects on our planet.",
+      "category": 1,
+      "difficulty": "beginner",
+      "base_tokens_reward": 20,
+      "perfect_score_bonus": 10,
+      "time_bonus_enabled": true,
+      "max_time_minutes": 10,
+      "min_level_required": 1,
+      "is_active": true,
+      "is_featured": true,
+      "randomize_questions": true,
+      "show_correct_answers": true,
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "quizzes.quiz",
+    "pk": 2,
+    "fields": {
+      "title": "Solar Energy Basics",
+      "description": "Learn about solar power, photovoltaic cells, and how solar energy can help combat climate change.",
+      "category": 2,
+      "difficulty": "beginner",
+      "base_tokens_reward": 15,
+      "perfect_score_bonus": 8,
+      "time_bonus_enabled": true,
+      "max_time_minutes": 8,
+      "min_level_required": 1,
+      "is_active": true,
+      "is_featured": false,
+      "randomize_questions": true,
+      "show_correct_answers": true,
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "quizzes.quiz",
+    "pk": 3,
+    "fields": {
+      "title": "Recycling Champions",
+      "description": "Master the art of recycling and learn how to properly sort and manage different types of waste.",
+      "category": 3,
+      "difficulty": "intermediate",
+      "base_tokens_reward": 25,
+      "perfect_score_bonus": 12,
+      "time_bonus_enabled": true,
+      "max_time_minutes": 12,
+      "min_level_required": 2,
+      "is_active": true,
+      "is_featured": true,
+      "randomize_questions": false,
+      "show_correct_answers": true,
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "quizzes.question",
+    "pk": 1,
+    "fields": {
+      "quiz": 1,
+      "question_type": "multiple_choice",
+      "text": "What is the primary cause of climate change?",
+      "explanation": "Human activities, particularly burning fossil fuels, release greenhouse gases that trap heat in the atmosphere, leading to global warming and climate change.",
+      "points": 1,
+      "order": 1,
+      "created_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "quizzes.answer",
+    "pk": 1,
+    "fields": {
+      "question": 1,
+      "text": "Natural climate variations",
+      "is_correct": false,
+      "order": 1
+    }
+  },
+  {
+    "model": "quizzes.answer",
+    "pk": 2,
+    "fields": {
+      "question": 1,
+      "text": "Human activities releasing greenhouse gases",
+      "is_correct": true,
+      "order": 2
+    }
+  },
+  {
+    "model": "quizzes.answer",
+    "pk": 3,
+    "fields": {
+      "question": 1,
+      "text": "Solar radiation changes",
+      "is_correct": false,
+      "order": 3
+    }
+  },
+  {
+    "model": "quizzes.answer",
+    "pk": 4,
+    "fields": {
+      "question": 1,
+      "text": "Ocean currents",
+      "is_correct": false,
+      "order": 4
+    }
+  },
+  {
+    "model": "quizzes.question",
+    "pk": 2,
+    "fields": {
+      "quiz": 1,
+      "question_type": "multiple_choice",
+      "text": "Which greenhouse gas is most abundant in the atmosphere?",
+      "explanation": "Carbon dioxide (CO2) is the most abundant greenhouse gas in the atmosphere, primarily released through burning fossil fuels, deforestation, and industrial processes.",
+      "points": 1,
+      "order": 2,
+      "created_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "quizzes.answer",
+    "pk": 5,
+    "fields": {
+      "question": 2,
+      "text": "Methane (CH4)",
+      "is_correct": false,
+      "order": 1
+    }
+  },
+  {
+    "model": "quizzes.answer",
+    "pk": 6,
+    "fields": {
+      "question": 2,
+      "text": "Carbon dioxide (CO2)",
+      "is_correct": true,
+      "order": 2
+    }
+  },
+  {
+    "model": "quizzes.answer",
+    "pk": 7,
+    "fields": {
+      "question": 2,
+      "text": "Nitrous oxide (N2O)",
+      "is_correct": false,
+      "order": 3
+    }
+  },
+  {
+    "model": "quizzes.answer",
+    "pk": 8,
+    "fields": {
+      "question": 2,
+      "text": "Fluorinated gases",
+      "is_correct": false,
+      "order": 4
+    }
+  },
+  {
+    "model": "quizzes.question",
+    "pk": 3,
+    "fields": {
+      "quiz": 1,
+      "question_type": "multiple_choice",
+      "text": "What is the Paris Agreement?",
+      "explanation": "The Paris Agreement is an international treaty on climate change adopted in 2015, where countries committed to limiting global warming to well below 2°C above pre-industrial levels.",
+      "points": 1,
+      "order": 3,
+      "created_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "quizzes.answer",
+    "pk": 9,
+    "fields": {
+      "question": 3,
+      "text": "A trade agreement between European countries",
+      "is_correct": false,
+      "order": 1
+    }
+  },
+  {
+    "model": "quizzes.answer",
+    "pk": 10,
+    "fields": {
+      "question": 3,
+      "text": "An international climate change treaty",
+      "is_correct": true,
+      "order": 2
+    }
+  },
+  {
+    "model": "quizzes.answer",
+    "pk": 11,
+    "fields": {
+      "question": 3,
+      "text": "A renewable energy initiative",
+      "is_correct": false,
+      "order": 3
+    }
+  },
+  {
+    "model": "quizzes.answer",
+    "pk": 12,
+    "fields": {
+      "question": 3,
+      "text": "A wildlife conservation program",
+      "is_correct": false,
+      "order": 4
+    }
+  },
+  {
+    "model": "quizzes.question",
+    "pk": 4,
+    "fields": {
+      "quiz": 1,
+      "question_type": "true_false",
+      "text": "Global temperatures have risen by approximately 1.1°C since pre-industrial times.",
+      "explanation": "True. Global average temperatures have increased by about 1.1°C (2°F) since the late 1800s, with most warming occurring in the past 40 years.",
+      "points": 1,
+      "order": 4,
+      "created_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "quizzes.answer",
+    "pk": 13,
+    "fields": {
+      "question": 4,
+      "text": "True",
+      "is_correct": true,
+      "order": 1
+    }
+  },
+  {
+    "model": "quizzes.answer",
+    "pk": 14,
+    "fields": {
+      "question": 4,
+      "text": "False",
+      "is_correct": false,
+      "order": 2
+    }
+  },
+  {
+    "model": "quizzes.question",
+    "pk": 5,
+    "fields": {
+      "quiz": 1,
+      "question_type": "multiple_choice",
+      "text": "Which of the following is NOT a renewable energy source?",
+      "explanation": "Natural gas is a fossil fuel and therefore not renewable. Solar, wind, and hydroelectric power are all renewable energy sources that don't deplete over time.",
+      "points": 1,
+      "order": 5,
+      "created_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "quizzes.answer",
+    "pk": 15,
+    "fields": {
+      "question": 5,
+      "text": "Solar power",
+      "is_correct": false,
+      "order": 1
+    }
+  },
+  {
+    "model": "quizzes.answer",
+    "pk": 16,
+    "fields": {
+      "question": 5,
+      "text": "Wind power",
+      "is_correct": false,
+      "order": 2
+    }
+  },
+  {
+    "model": "quizzes.answer",
+    "pk": 17,
+    "fields": {
+      "question": 5,
+      "text": "Natural gas",
+      "is_correct": true,
+      "order": 3
+    }
+  },
+  {
+    "model": "quizzes.answer",
+    "pk": 18,
+    "fields": {
+      "question": 5,
+      "text": "Hydroelectric power",
+      "is_correct": false,
+      "order": 4
+    }
+  },
+  {
+    "model": "quizzes.question",
+    "pk": 6,
+    "fields": {
+      "quiz": 2,
+      "question_type": "multiple_choice",
+      "text": "What does 'PV' stand for in solar energy?",
+      "explanation": "PV stands for Photovoltaic, which refers to the technology that converts sunlight directly into electricity using solar cells.",
+      "points": 1,
+      "order": 1,
+      "created_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "quizzes.answer",
+    "pk": 19,
+    "fields": {
+      "question": 6,
+      "text": "Power Voltage",
+      "is_correct": false,
+      "order": 1
+    }
+  },
+  {
+    "model": "quizzes.answer",
+    "pk": 20,
+    "fields": {
+      "question": 6,
+      "text": "Photovoltaic",
+      "is_correct": true,
+      "order": 2
+    }
+  },
+  {
+    "model": "quizzes.answer",
+    "pk": 21,
+    "fields": {
+      "question": 6,
+      "text": "Positive Voltage",
+      "is_correct": false,
+      "order": 3
+    }
+  },
+  {
+    "model": "quizzes.answer",
+    "pk": 22,
+    "fields": {
+      "question": 6,
+      "text": "Panel Voltage",
+      "is_correct": false,
+      "order": 4
+    }
+  },
+  {
+    "model": "quizzes.question",
+    "pk": 7,
+    "fields": {
+      "quiz": 2,
+      "question_type": "multiple_choice",
+      "text": "Which country leads the world in solar energy production?",
+      "explanation": "China is the world's largest producer of solar energy, accounting for more than 30% of global solar power generation.",
+      "points": 1,
+      "order": 2,
+      "created_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "quizzes.answer",
+    "pk": 23,
+    "fields": {
+      "question": 7,
+      "text": "United States",
+      "is_correct": false,
+      "order": 1
+    }
+  },
+  {
+    "model": "quizzes.answer",
+    "pk": 24,
+    "fields": {
+      "question": 7,
+      "text": "Germany",
+      "is_correct": false,
+      "order": 2
+    }
+  },
+  {
+    "model": "quizzes.answer",
+    "pk": 25,
+    "fields": {
+      "question": 7,
+      "text": "China",
+      "is_correct": true,
+      "order": 3
+    }
+  },
+  {
+    "model": "quizzes.answer",
+    "pk": 26,
+    "fields": {
+      "question": 7,
+      "text": "Japan",
+      "is_correct": false,
+      "order": 4
+    }
+  },
+  {
+    "model": "quizzes.question",
+    "pk": 8,
+    "fields": {
+      "quiz": 3,
+      "question_type": "multiple_choice",
+      "text": "Which material takes the longest to decompose in a landfill?",
+      "explanation": "Glass can take up to 1 million years to decompose in a landfill, making it one of the longest-lasting waste materials. However, glass is 100% recyclable.",
+      "points": 1,
+      "order": 1,
+      "created_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "quizzes.answer",
+    "pk": 27,
+    "fields": {
+      "question": 8,
+      "text": "Plastic bottles",
+      "is_correct": false,
+      "order": 1
+    }
+  },
+  {
+    "model": "quizzes.answer",
+    "pk": 28,
+    "fields": {
+      "question": 8,
+      "text": "Aluminum cans",
+      "is_correct": false,
+      "order": 2
+    }
+  },
+  {
+    "model": "quizzes.answer",
+    "pk": 29,
+    "fields": {
+      "question": 8,
+      "text": "Glass bottles",
+      "is_correct": true,
+      "order": 3
+    }
+  },
+  {
+    "model": "quizzes.answer",
+    "pk": 30,
+    "fields": {
+      "question": 8,
+      "text": "Paper products",
+      "is_correct": false,
+      "order": 4
+    }
+  },
+  {
+    "model": "quizzes.question",
+    "pk": 9,
+    "fields": {
+      "quiz": 3,
+      "question_type": "true_false",
+      "text": "Composting can reduce household waste by up to 30%.",
+      "explanation": "True. Composting organic waste like food scraps and yard waste can reduce household waste by 20-30%, while creating valuable soil amendment.",
+      "points": 1,
+      "order": 2,
+      "created_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "quizzes.answer",
+    "pk": 31,
+    "fields": {
+      "question": 9,
+      "text": "True",
+      "is_correct": true,
+      "order": 1
+    }
+  },
+  {
+    "model": "quizzes.answer",
+    "pk": 32,
+    "fields": {
+      "question": 9,
+      "text": "False",
+      "is_correct": false,
+      "order": 2
+    }
+  }
+]

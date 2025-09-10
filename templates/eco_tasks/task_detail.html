@@ -1,0 +1,245 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ task.title }} - EcoLearning Platform{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <!-- Task Details -->
+        <div class="col-md-8">
+            <div class="eco-card p-4">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <div>
+                        <h1>{{ task.title }}</h1>
+                        <p class="text-muted">{{ task.category.name }}</p>
+                    </div>
+                    {% if task.is_featured %}
+                        <span class="badge bg-warning fs-6">Featured</span>
+                    {% endif %}
+                </div>
+                
+                <p class="lead">{{ task.description }}</p>
+                
+                <!-- Task Image -->
+                {% if task.image %}
+                    <img src="{{ task.image.url }}" class="img-fluid rounded mb-4" alt="{{ task.title }}">
+                {% endif %}
+                
+                <!-- Task Stats -->
+                <div class="row mb-4">
+                    <div class="col-md-3">
+                        <div class="text-center p-3 bg-light rounded">
+                            <i class="fas fa-clock fa-2x text-info mb-2"></i>
+                            <div class="fw-bold">{{ task.estimated_time_minutes }}</div>
+                            <small class="text-muted">Minutes</small>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="text-center p-3 bg-light rounded">
+                            <i class="fas fa-coins fa-2x text-warning mb-2"></i>
+                            <div class="fw-bold">{{ task.base_tokens_reward }}</div>
+                            <small class="text-muted">Tokens</small>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="text-center p-3 bg-light rounded">
+                            <i class="fas fa-star fa-2x text-success mb-2"></i>
+                            <div class="fw-bold">{{ task.experience_points }}</div>
+                            <small class="text-muted">Experience</small>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="text-center p-3 bg-light rounded">
+                            <i class="fas fa-users fa-2x text-primary mb-2"></i>
+                            <div class="fw-bold">{{ task.get_completion_count }}</div>
+                            <small class="text-muted">Completed</small>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Instructions -->
+                <div class="mb-4">
+                    <h5><i class="fas fa-list-ol"></i> Instructions</h5>
+                    <div class="p-3 bg-light rounded">
+                        {{ task.instructions|linebreaks }}
+                    </div>
+                </div>
+                
+                <!-- Materials Needed -->
+                {% if task.materials_needed %}
+                <div class="mb-4">
+                    <h5><i class="fas fa-toolbox"></i> Materials Needed</h5>
+                    <div class="p-3 bg-light rounded">
+                        {{ task.materials_needed|linebreaks }}
+                    </div>
+                </div>
+                {% endif %}
+                
+                <!-- Verification Method -->
+                <div class="mb-4">
+                    <h5><i class="fas fa-check-circle"></i> How to Submit</h5>
+                    <div class="p-3 bg-info bg-opacity-10 rounded">
+                        <p><strong>Verification Method:</strong> {{ task.get_verification_method_display }}</p>
+                        <p class="mb-0">{{ task.verification_instructions }}</p>
+                    </div>
+                </div>
+                
+                <!-- Action Buttons -->
+                <div class="d-grid gap-2 d-md-flex">
+                    {% if user.is_authenticated %}
+                        {% if user_task %}
+                            {% if user_task.status == 'not_started' %}
+                                <form method="post" action="{% url 'eco_tasks:start_task' task.id %}">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-eco btn-lg">
+                                        <i class="fas fa-play"></i> Start Task
+                                    </button>
+                                </form>
+                            {% elif user_task.status == 'in_progress' %}
+                                <a href="{% url 'eco_tasks:submit_task' task.id %}" class="btn btn-warning btn-lg">
+                                    <i class="fas fa-upload"></i> Submit Task
+                                </a>
+                            {% elif user_task.status == 'submitted' %}
+                                <button class="btn btn-info btn-lg" disabled>
+                                    <i class="fas fa-clock"></i> Under Review
+                                </button>
+                            {% elif user_task.status == 'completed' %}
+                                <button class="btn btn-success btn-lg" disabled>
+                                    <i class="fas fa-check"></i> Completed
+                                </button>
+                            {% elif user_task.status == 'rejected' %}
+                                <a href="{% url 'eco_tasks:submit_task' task.id %}" class="btn btn-warning btn-lg">
+                                    <i class="fas fa-redo"></i> Resubmit Task
+                                </a>
+                            {% endif %}
+                        {% else %}
+                            {% if user.level >= task.min_level_required %}
+                                <form method="post" action="{% url 'eco_tasks:start_task' task.id %}">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-eco btn-lg">
+                                        <i class="fas fa-play"></i> Start Task
+                                    </button>
+                                </form>
+                            {% else %}
+                                <button class="btn btn-secondary btn-lg" disabled>
+                                    <i class="fas fa-lock"></i> Requires Level {{ task.min_level_required }}
+                                </button>
+                            {% endif %}
+                        {% endif %}
+                    {% else %}
+                        <a href="{% url 'accounts:login' %}" class="btn btn-eco btn-lg">
+                            <i class="fas fa-sign-in-alt"></i> Login to Start Task
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <!-- Sidebar -->
+        <div class="col-md-4">
+            <!-- Task Progress -->
+            {% if user.is_authenticated and user_task %}
+            <div class="eco-card p-4 mb-4">
+                <h5><i class="fas fa-chart-line"></i> Your Progress</h5>
+                
+                <div class="text-center mb-3">
+                    {% if user_task.status == 'completed' %}
+                        <i class="fas fa-check-circle fa-3x text-success mb-2"></i>
+                        <div class="fw-bold text-success">Completed!</div>
+                        <small class="text-muted">{{ user_task.completed_at|timesince }} ago</small>
+                    {% elif user_task.status == 'submitted' %}
+                        <i class="fas fa-clock fa-3x text-info mb-2"></i>
+                        <div class="fw-bold text-info">Under Review</div>
+                        <small class="text-muted">Submitted {{ user_task.submitted_at|timesince }} ago</small>
+                    {% elif user_task.status == 'in_progress' %}
+                        <i class="fas fa-play-circle fa-3x text-warning mb-2"></i>
+                        <div class="fw-bold text-warning">In Progress</div>
+                        <small class="text-muted">Started {{ user_task.started_at|timesince }} ago</small>
+                    {% elif user_task.status == 'rejected' %}
+                        <i class="fas fa-times-circle fa-3x text-danger mb-2"></i>
+                        <div class="fw-bold text-danger">Needs Revision</div>
+                        <small class="text-muted">{{ user_task.reviewed_at|timesince }} ago</small>
+                    {% endif %}
+                </div>
+                
+                {% if user_task.status == 'completed' %}
+                    <div class="row text-center">
+                        <div class="col-6">
+                            <div class="fw-bold">{{ user_task.tokens_earned }}</div>
+                            <small class="text-muted">Tokens Earned</small>
+                        </div>
+                        <div class="col-6">
+                            <div class="fw-bold">{{ user_task.experience_gained }}</div>
+                            <small class="text-muted">XP Gained</small>
+                        </div>
+                    </div>
+                {% endif %}
+                
+                {% if user_task.reviewer_notes %}
+                    <div class="mt-3 p-2 bg-light rounded">
+                        <strong>Reviewer Notes:</strong>
+                        <p class="mb-0 small">{{ user_task.reviewer_notes }}</p>
+                    </div>
+                {% endif %}
+            </div>
+            {% endif %}
+            
+            <!-- Task Info -->
+            <div class="eco-card p-4 mb-4">
+                <h5><i class="fas fa-info-circle"></i> Task Details</h5>
+                
+                <div class="mb-2">
+                    <strong>Difficulty:</strong>
+                    {% if task.difficulty == 'easy' %}
+                        <span class="badge bg-success">{{ task.get_difficulty_display }}</span>
+                    {% elif task.difficulty == 'medium' %}
+                        <span class="badge bg-warning">{{ task.get_difficulty_display }}</span>
+                    {% else %}
+                        <span class="badge bg-danger">{{ task.get_difficulty_display }}</span>
+                    {% endif %}
+                </div>
+                
+                <div class="mb-2">
+                    <strong>Type:</strong> {{ task.get_task_type_display }}
+                </div>
+                
+                <div class="mb-2">
+                    <strong>Min Level:</strong> {{ task.min_level_required }}
+                </div>
+                
+                {% if task.requires_approval %}
+                    <div class="mb-2">
+                        <i class="fas fa-user-check text-info"></i> Requires approval
+                    </div>
+                {% endif %}
+            </div>
+            
+            <!-- Task Statistics -->
+            <div class="eco-card p-4">
+                <h5><i class="fas fa-chart-bar"></i> Statistics</h5>
+                
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between">
+                        <span>Completion Rate</span>
+                        <span class="fw-bold">{{ task.get_completion_rate|floatformat:1 }}%</span>
+                    </div>
+                </div>
+                
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between">
+                        <span>Total Attempts</span>
+                        <span class="fw-bold">{{ task.user_attempts.count }}</span>
+                    </div>
+                </div>
+                
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between">
+                        <span>Completed</span>
+                        <span class="fw-bold">{{ task.get_completion_count }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

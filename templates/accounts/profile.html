@@ -1,0 +1,202 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}{{ user.username }}'s Profile - EcoLearning{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <!-- Profile Info -->
+        <div class="col-md-4">
+            <div class="eco-card p-4 text-center">
+                {% if user.avatar %}
+                    <img src="{{ user.avatar.url }}" class="rounded-circle mb-3" width="120" height="120" alt="Avatar">
+                {% else %}
+                    <div class="bg-success rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 120px; height: 120px;">
+                        <i class="fas fa-user fa-3x text-white"></i>
+                    </div>
+                {% endif %}
+                
+                <h3>{{ user.get_full_name|default:user.username }}</h3>
+                <p class="text-muted">{{ user.school_name|default:"Environmental Learner" }}</p>
+                
+                <div class="row text-center mt-4">
+                    <div class="col-6">
+                        <div class="token-badge">
+                            <i class="fas fa-coins"></i> {{ user.total_eco_tokens }}
+                        </div>
+                        <small class="d-block text-muted mt-1">Eco-Tokens</small>
+                    </div>
+                    <div class="col-6">
+                        <div class="level-badge">
+                            <i class="fas fa-star"></i> {{ user.level }}
+                        </div>
+                        <small class="d-block text-muted mt-1">Level</small>
+                    </div>
+                </div>
+
+                <div class="mt-4">
+                    <h6>Progress to Level {{ user.level|add:1 }}</h6>
+                    <div class="progress progress-eco">
+                        <div class="progress-bar progress-bar-eco" style="width: {{ user.get_level_progress }}%"></div>
+                    </div>
+                    <small class="text-muted">{{ user.experience_points }} / {{ user.get_next_level_xp }} XP</small>
+                </div>
+            </div>
+
+            <!-- Quick Stats -->
+            <div class="eco-card p-4 mt-3">
+                <h5><i class="fas fa-chart-bar"></i> Quick Stats</h5>
+                <div class="row text-center">
+                    <div class="col-6">
+                        <h4 class="text-success">{{ user.profile.quizzes_completed }}</h4>
+                        <small>Quizzes</small>
+                    </div>
+                    <div class="col-6">
+                        <h4 class="text-info">{{ user.profile.tasks_completed }}</h4>
+                        <small>Tasks</small>
+                    </div>
+                </div>
+                <div class="row text-center mt-3">
+                    <div class="col-6">
+                        <h4 class="text-warning">{{ user.profile.streak_days }}</h4>
+                        <small>Day Streak</small>
+                    </div>
+                    <div class="col-6">
+                        <h4 class="text-danger">{{ user.profile.longest_streak }}</h4>
+                        <small>Best Streak</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Profile Details & Edit -->
+        <div class="col-md-8">
+            <div class="eco-card p-4">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h4><i class="fas fa-user-edit"></i> Profile Information</h4>
+                    <button class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#editProfileModal">
+                        <i class="fas fa-edit"></i> Edit Profile
+                    </button>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6>Personal Information</h6>
+                        <p><strong>Username:</strong> {{ user.username }}</p>
+                        <p><strong>Email:</strong> {{ user.email }}</p>
+                        <p><strong>School Type:</strong> {{ user.get_school_type_display|default:"Not specified" }}</p>
+                        <p><strong>Grade Level:</strong> {{ user.grade_level|default:"Not specified" }}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <h6>Location</h6>
+                        <p><strong>City:</strong> {{ user.city|default:"Not specified" }}</p>
+                        <p><strong>Country:</strong> {{ user.country|default:"Not specified" }}</p>
+                        <h6 class="mt-3">Preferences</h6>
+                        <p><strong>Notifications:</strong> {{ user.notifications_enabled|yesno:"Enabled,Disabled" }}</p>
+                        <p><strong>Public Profile:</strong> {{ user.public_profile|yesno:"Yes,No" }}</p>
+                    </div>
+                </div>
+
+                {% if user.bio %}
+                <div class="mt-3">
+                    <h6>Bio</h6>
+                    <p>{{ user.bio }}</p>
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Recent Achievements -->
+            <div class="eco-card p-4 mt-3">
+                <h5><i class="fas fa-trophy"></i> Recent Achievements</h5>
+                <div class="row">
+                    {% for achievement in user.achievements.all|slice:":6" %}
+                        <div class="col-md-4 mb-2">
+                            <span class="achievement-badge">
+                                {{ achievement.achievement.icon }} {{ achievement.achievement.name }}
+                            </span>
+                        </div>
+                    {% empty %}
+                        <div class="col-12">
+                            <p class="text-muted">No achievements yet. Complete quizzes and tasks to earn your first badges!</p>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Recent Activity -->
+            <div class="eco-card p-4 mt-3">
+                <h5><i class="fas fa-history"></i> Recent Activity</h5>
+                <div class="list-group list-group-flush">
+                    {% for transaction in user.token_transactions.all|slice:":5" %}
+                        <div class="list-group-item d-flex justify-content-between align-items-center">
+                            <div>
+                                <i class="fas fa-coins text-warning me-2"></i>
+                                {{ transaction.description }}
+                                <small class="text-muted d-block">{{ transaction.created_at|timesince }} ago</small>
+                            </div>
+                            <span class="badge bg-success">+{{ transaction.amount }}</span>
+                        </div>
+                    {% empty %}
+                        <p class="text-muted">No recent activity. Start learning to see your progress here!</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Profile Modal -->
+<div class="modal fade" id="editProfileModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Edit Profile</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="post" enctype="multipart/form-data">
+                <div class="modal-body">
+                    {% csrf_token %}
+                    <!-- Profile form would go here -->
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">First Name</label>
+                                <input type="text" class="form-control" name="first_name" value="{{ user.first_name }}">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Last Name</label>
+                                <input type="text" class="form-control" name="last_name" value="{{ user.last_name }}">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Bio</label>
+                        <textarea class="form-control" name="bio" rows="3">{{ user.bio }}</textarea>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">School Name</label>
+                                <input type="text" class="form-control" name="school_name" value="{{ user.school_name }}">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Grade Level</label>
+                                <input type="text" class="form-control" name="grade_level" value="{{ user.grade_level }}">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-eco">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

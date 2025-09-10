@@ -1,0 +1,258 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ category.name }} Quizzes - Eco Learning Platform{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-12">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'quizzes:categories' %}">Quiz Categories</a></li>
+                    <li class="breadcrumb-item active">{{ category.name }}</li>
+                </ol>
+            </nav>
+            
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h1 class="h2 text-success">
+                        <span class="me-2">{{ category.icon }}</span>
+                        {{ category.name }} Quizzes
+                    </h1>
+                    <p class="text-muted">{{ category.description }}</p>
+                </div>
+                {% if user.is_authenticated %}
+                <div class="d-flex align-items-center">
+                    <span class="badge bg-primary me-2">
+                        <i class="fas fa-coins me-1"></i>
+                        {{ user.total_eco_tokens|default:0 }} Tokens
+                    </span>
+                    <span class="badge bg-info">
+                        <i class="fas fa-star me-1"></i>
+                        Level {{ user.level|default:1 }}
+                    </span>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Category Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="eco-card p-4">
+                <div class="row align-items-center">
+                    <div class="col-md-2 text-center">
+                        <div style="font-size: 4rem; color: {{ category.color }};">
+                            {{ category.icon }}
+                        </div>
+                    </div>
+                    <div class="col-md-10">
+                        <h1>{{ category.name }}</h1>
+                        <p class="lead">{{ category.description }}</p>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <small class="text-muted">Total Quizzes</small>
+                                <div class="fw-bold">{{ quizzes.count }}</div>
+                            </div>
+                            <div class="col-md-3">
+                                <small class="text-muted">Your Progress</small>
+                                <div class="fw-bold">{{ user_completed_count }}/{{ quizzes.count }}</div>
+                            </div>
+                            <div class="col-md-3">
+                                <small class="text-muted">Average Score</small>
+                                <div class="fw-bold">{{ user_average_score|floatformat:1 }}%</div>
+                            </div>
+                            <div class="col-md-3">
+                                <small class="text-muted">Tokens Earned</small>
+                                <div class="fw-bold text-warning">{{ user_tokens_earned }}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filter and Sort -->
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="btn-group" role="group">
+                <input type="radio" class="btn-check" name="difficulty" id="all" autocomplete="off" checked>
+                <label class="btn btn-outline-secondary" for="all">All Levels</label>
+                
+                <input type="radio" class="btn-check" name="difficulty" id="beginner" autocomplete="off">
+                <label class="btn btn-outline-success" for="beginner">Beginner</label>
+                
+                <input type="radio" class="btn-check" name="difficulty" id="intermediate" autocomplete="off">
+                <label class="btn btn-outline-warning" for="intermediate">Intermediate</label>
+                
+                <input type="radio" class="btn-check" name="difficulty" id="advanced" autocomplete="off">
+                <label class="btn btn-outline-danger" for="advanced">Advanced</label>
+            </div>
+        </div>
+        <div class="col-md-6 text-end">
+            <select class="form-select d-inline-block w-auto" id="sortBy">
+                <option value="title">Sort by Title</option>
+                <option value="difficulty">Sort by Difficulty</option>
+                <option value="tokens">Sort by Tokens</option>
+                <option value="questions">Sort by Questions</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- Quizzes Grid -->
+    <div class="row" id="quizzesGrid">
+        {% for quiz in quizzes %}
+            <div class="col-md-6 col-lg-4 mb-4 quiz-card" data-difficulty="{{ quiz.difficulty }}" data-tokens="{{ quiz.base_tokens_reward }}" data-questions="{{ quiz.get_questions_count }}">
+                <div class="eco-card h-100">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <h6 class="card-title">{{ quiz.title }}</h6>
+                            {% if quiz.is_featured %}
+                                <span class="badge bg-warning">Featured</span>
+                            {% endif %}
+                        </div>
+                        
+                        <p class="card-text small">{{ quiz.description|truncatewords:20 }}</p>
+                        
+                        <!-- Difficulty Badge -->
+                        <div class="mb-2">
+                            {% if quiz.difficulty == 'beginner' %}
+                                <span class="badge bg-success">{{ quiz.get_difficulty_display }}</span>
+                            {% elif quiz.difficulty == 'intermediate' %}
+                                <span class="badge bg-warning">{{ quiz.get_difficulty_display }}</span>
+                            {% else %}
+                                <span class="badge bg-danger">{{ quiz.get_difficulty_display }}</span>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Quiz Stats -->
+                        <div class="row text-center mb-3">
+                            <div class="col-4">
+                                <small class="text-muted">Questions</small>
+                                <div class="fw-bold">{{ quiz.get_questions_count }}</div>
+                            </div>
+                            <div class="col-4">
+                                <small class="text-muted">Time</small>
+                                <div class="fw-bold">{{ quiz.max_time_minutes }}m</div>
+                            </div>
+                            <div class="col-4">
+                                <small class="text-muted">Tokens</small>
+                                <div class="fw-bold text-warning">{{ quiz.base_tokens_reward }}</div>
+                            </div>
+                        </div>
+                        
+                        <!-- User Progress -->
+                        {% if user.is_authenticated %}
+                            {% with user_attempt=quiz.attempts.filter:user=user.first %}
+                                {% if user_attempt %}
+                                    <div class="mb-3">
+                                        <small class="text-muted">Your Best Score</small>
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <span class="fw-bold">{{ user_attempt.score|floatformat:1 }}%</span>
+                                            <span class="badge bg-info">Completed</span>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            {% endwith %}
+                        {% endif %}
+                        
+                        <!-- Action Button -->
+                        <div class="d-grid">
+                            {% if user.is_authenticated %}
+                                {% if user.level >= quiz.min_level_required %}
+                                    <a href="{% url 'quizzes:quiz_detail' quiz.id %}" class="btn btn-eco">
+                                        <i class="fas fa-play"></i> 
+                                        {% with user_attempt=quiz.attempts.filter:user=user.first %}
+                                            {% if user_attempt %}Retake Quiz{% else %}Take Quiz{% endif %}
+                                        {% endwith %}
+                                    </a>
+                                {% else %}
+                                    <button class="btn btn-secondary" disabled>
+                                        <i class="fas fa-lock"></i> Requires Level {{ quiz.min_level_required }}
+                                    </button>
+                                {% endif %}
+                            {% else %}
+                                <a href="{% url 'accounts:login' %}" class="btn btn-outline-primary">
+                                    <i class="fas fa-sign-in-alt"></i> Login to Take Quiz
+                                </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% empty %}
+            <div class="col-12 text-center">
+                <i class="fas fa-question-circle fa-4x text-muted mb-4"></i>
+                <h3>No Quizzes Available</h3>
+                <p class="text-muted">Quizzes for this category are coming soon!</p>
+                <a href="{% url 'quizzes:categories' %}" class="btn btn-eco">
+                    <i class="fas fa-arrow-left"></i> Back to Categories
+                </a>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const difficultyFilters = document.querySelectorAll('input[name="difficulty"]');
+    const sortSelect = document.getElementById('sortBy');
+    const quizCards = document.querySelectorAll('.quiz-card');
+    
+    // Filter by difficulty
+    difficultyFilters.forEach(filter => {
+        filter.addEventListener('change', function() {
+            const selectedDifficulty = this.id;
+            
+            quizCards.forEach(card => {
+                if (selectedDifficulty === 'all' || card.dataset.difficulty === selectedDifficulty) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+    });
+    
+    // Sort functionality
+    sortSelect.addEventListener('change', function() {
+        const sortBy = this.value;
+        const grid = document.getElementById('quizzesGrid');
+        const cards = Array.from(quizCards);
+        
+        cards.sort((a, b) => {
+            let aValue, bValue;
+            
+            switch(sortBy) {
+                case 'title':
+                    aValue = a.querySelector('.card-title').textContent.toLowerCase();
+                    bValue = b.querySelector('.card-title').textContent.toLowerCase();
+                    return aValue.localeCompare(bValue);
+                case 'difficulty':
+                    const difficultyOrder = {'beginner': 1, 'intermediate': 2, 'advanced': 3};
+                    aValue = difficultyOrder[a.dataset.difficulty];
+                    bValue = difficultyOrder[b.dataset.difficulty];
+                    return aValue - bValue;
+                case 'tokens':
+                    aValue = parseInt(a.dataset.tokens);
+                    bValue = parseInt(b.dataset.tokens);
+                    return bValue - aValue; // Descending order
+                case 'questions':
+                    aValue = parseInt(a.dataset.questions);
+                    bValue = parseInt(b.dataset.questions);
+                    return bValue - aValue; // Descending order
+            }
+        });
+        
+        // Re-append sorted cards
+        cards.forEach(card => grid.appendChild(card));
+    });
+});
+</script>
+{% endblock %}

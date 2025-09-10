@@ -1,0 +1,219 @@
+{% extends 'base.html' %}
+
+{% block title %}EcoBot Chat - EcoLearning Platform{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <!-- Chat Header -->
+            <div class="eco-card p-3 mb-3">
+                <div class="d-flex align-items-center">
+                    <div class="me-3">
+                        <div class="bg-success rounded-circle d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
+                            <i class="fas fa-robot text-white fa-lg"></i>
+                        </div>
+                    </div>
+                    <div>
+                        <h5 class="mb-0">EcoBot</h5>
+                        <small class="text-muted">Your environmental learning assistant</small>
+                    </div>
+                    <div class="ms-auto">
+                        <span class="badge bg-success">Online</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chat Messages -->
+            <div class="eco-card p-0 mb-3" style="height: 500px;">
+                <div class="p-3" id="chatMessages" style="height: 440px; overflow-y: auto;">
+                    <!-- Welcome Message -->
+                    <div class="chat-bubble bot">
+                        <div class="d-flex align-items-start">
+                            <i class="fas fa-robot text-success me-2 mt-1"></i>
+                            <div>
+                                <strong>EcoBot</strong>
+                                <p class="mb-0">Hi there! 🌱 I'm EcoBot, your environmental learning companion. I can help you with:</p>
+                                <ul class="mb-0 mt-2">
+                                    <li>Quiz hints and explanations</li>
+                                    <li>Eco-task guidance</li>
+                                    <li>Environmental facts</li>
+                                    <li>Platform navigation</li>
+                                </ul>
+                                <p class="mb-0 mt-2">What would you like to learn about today?</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Chat messages will be loaded here -->
+                    {% for message in messages %}
+                        <div class="chat-bubble {% if message.message_type == 'user' %}user{% else %}bot{% endif %}">
+                            {% if message.message_type == 'user' %}
+                                <div class="text-end">
+                                    <strong>You</strong>
+                                    <p class="mb-0">{{ message.content }}</p>
+                                </div>
+                            {% else %}
+                                <div class="d-flex align-items-start">
+                                    <i class="fas fa-robot text-success me-2 mt-1"></i>
+                                    <div>
+                                        <strong>EcoBot</strong>
+                                        <p class="mb-0">{{ message.content|linebreaks }}</p>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                </div>
+
+                <!-- Chat Input -->
+                <div class="border-top p-3">
+                    <form id="chatForm" method="post">
+                        {% csrf_token %}
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="messageInput" name="message" 
+                                   placeholder="Ask me anything about the environment..." autocomplete="off" required>
+                            <button class="btn btn-eco" type="submit" id="sendButton">
+                                <i class="fas fa-paper-plane"></i>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="eco-card p-3">
+                <h6><i class="fas fa-bolt"></i> Quick Questions</h6>
+                <div class="d-flex flex-wrap gap-2">
+                    <button class="btn btn-outline-primary btn-sm" onclick="sendQuickMessage('What is climate change?')">
+                        Climate Change
+                    </button>
+                    <button class="btn btn-outline-success btn-sm" onclick="sendQuickMessage('How can I reduce my carbon footprint?')">
+                        Carbon Footprint
+                    </button>
+                    <button class="btn btn-outline-info btn-sm" onclick="sendQuickMessage('Tell me about renewable energy')">
+                        Renewable Energy
+                    </button>
+                    <button class="btn btn-outline-warning btn-sm" onclick="sendQuickMessage('How do I take a quiz?')">
+                        How to Quiz
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+const chatMessages = document.getElementById('chatMessages');
+const chatForm = document.getElementById('chatForm');
+const messageInput = document.getElementById('messageInput');
+const sendButton = document.getElementById('sendButton');
+
+// Auto-scroll to bottom
+function scrollToBottom() {
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+// Send message
+chatForm.addEventListener('submit', function(e) {
+    e.preventDefault();
+    const message = messageInput.value.trim();
+    if (!message) return;
+    
+    sendMessage(message);
+});
+
+function sendMessage(message) {
+    // Add user message to chat
+    addMessage(message, 'user');
+    messageInput.value = '';
+    
+    // Show typing indicator
+    showTyping();
+    
+    // Send to server
+    fetch('{% url "chatbot:chat" %}', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+        },
+        body: 'message=' + encodeURIComponent(message)
+    })
+    .then(response => response.json())
+    .then(data => {
+        hideTyping();
+        if (data.response) {
+            addMessage(data.response, 'bot');
+        }
+    })
+    .catch(error => {
+        hideTyping();
+        addMessage('Sorry, I encountered an error. Please try again.', 'bot');
+    });
+}
+
+function addMessage(content, type) {
+    const messageDiv = document.createElement('div');
+    messageDiv.className = `chat-bubble ${type}`;
+    
+    if (type === 'user') {
+        messageDiv.innerHTML = `
+            <div class="text-end">
+                <strong>You</strong>
+                <p class="mb-0">${content}</p>
+            </div>
+        `;
+    } else {
+        messageDiv.innerHTML = `
+            <div class="d-flex align-items-start">
+                <i class="fas fa-robot text-success me-2 mt-1"></i>
+                <div>
+                    <strong>EcoBot</strong>
+                    <p class="mb-0">${content}</p>
+                </div>
+            </div>
+        `;
+    }
+    
+    chatMessages.appendChild(messageDiv);
+    scrollToBottom();
+}
+
+function showTyping() {
+    const typingDiv = document.createElement('div');
+    typingDiv.id = 'typing';
+    typingDiv.className = 'chat-bubble bot';
+    typingDiv.innerHTML = `
+        <div class="d-flex align-items-start">
+            <i class="fas fa-robot text-success me-2 mt-1"></i>
+            <div>
+                <strong>EcoBot</strong>
+                <p class="mb-0"><i class="fas fa-circle-notch fa-spin"></i> Typing...</p>
+            </div>
+        </div>
+    `;
+    chatMessages.appendChild(typingDiv);
+    scrollToBottom();
+}
+
+function hideTyping() {
+    const typing = document.getElementById('typing');
+    if (typing) {
+        typing.remove();
+    }
+}
+
+function sendQuickMessage(message) {
+    sendMessage(message);
+}
+
+// Focus input on load
+document.addEventListener('DOMContentLoaded', function() {
+    messageInput.focus();
+    scrollToBottom();
+});
+</script>
+{% endblock %}

@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-4">
+    <h2>{{ quiz.title }}</h2>
+    <p>{{ quiz.description }}</p>
+    <p><strong>Total Questions:</strong> {{ questions_count }}</p>
+    <p><strong>Minimum Level Required:</strong> {{ quiz.min_level_required }}</p>
+
+    {% if best_attempt %}
+        <p><strong>Your Best Score:</strong> {{ best_attempt.score }}%</p>
+    {% endif %}
+
+    <h4>Your Recent Attempts</h4>
+    <ul>
+        {% for attempt in user_attempts %}
+            <li>
+                {{ attempt.started_at|date:"M d, Y H:i" }} - 
+                {% if attempt.is_completed %}
+                    Score: {{ attempt.score }}%
+                {% else %}
+                    In Progress
+                {% endif %}
+            </li>
+        {% empty %}
+            <li>No attempts yet.</li>
+        {% endfor %}
+    </ul>
+
+    {% if can_start %}
+        <a href="{% url 'quizzes:start_quiz' quiz.id %}" class="btn btn-primary">
+            Start Quiz
+        </a>
+    {% else %}
+        <p class="text-danger">
+            You need to reach level {{ quiz.min_level_required }} to unlock this quiz.
+        </p>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,123 @@
+{% extends 'base.html' %}
+
+{% block title %}Quiz Results - {{ quiz.title }}{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <!-- Results Header -->
+            <div class="eco-card p-4 text-center mb-4">
+                <div class="mb-4">
+                    {% if attempt.is_perfect_score %}
+                        <i class="fas fa-trophy fa-4x text-warning mb-3"></i>
+                        <h1 class="text-success">Perfect Score! 🎉</h1>
+                    {% elif attempt.score >= 80 %}
+                        <i class="fas fa-star fa-4x text-success mb-3"></i>
+                        <h1 class="text-success">Excellent Work!</h1>
+                    {% elif attempt.score >= 60 %}
+                        <i class="fas fa-thumbs-up fa-4x text-info mb-3"></i>
+                        <h1 class="text-info">Good Job!</h1>
+                    {% else %}
+                        <i class="fas fa-redo fa-4x text-warning mb-3"></i>
+                        <h1 class="text-warning">Keep Learning!</h1>
+                    {% endif %}
+                </div>
+                
+                <div class="display-3 fw-bold text-primary mb-2">{{ attempt.score|floatformat:1 }}%</div>
+                <p class="lead">{{ attempt.correct_answers }} out of {{ attempt.total_questions }} questions correct</p>
+                
+                <!-- Rewards Earned -->
+                <div class="row mt-4">
+                    <div class="col-md-4">
+                        <div class="p-3 bg-warning bg-opacity-10 rounded">
+                            <i class="fas fa-coins fa-2x text-warning mb-2"></i>
+                            <div class="fw-bold fs-4">{{ attempt.tokens_earned }}</div>
+                            <small>Eco-Tokens Earned</small>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="p-3 bg-info bg-opacity-10 rounded">
+                            <i class="fas fa-star fa-2x text-info mb-2"></i>
+                            <div class="fw-bold fs-4">{{ attempt.experience_gained }}</div>
+                            <small>Experience Points</small>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="p-3 bg-success bg-opacity-10 rounded">
+                            <i class="fas fa-clock fa-2x text-success mb-2"></i>
+                            <div class="fw-bold fs-4">{{ attempt.time_taken_seconds|floatformat:0 }}s</div>
+                            <small>Time Taken</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Question Review -->
+            {% if quiz.show_correct_answers %}
+            <div class="eco-card p-4 mb-4">
+                <h4><i class="fas fa-list-check"></i> Question Review</h4>
+                
+                {% for user_answer in attempt.user_answers.all %}
+                    <div class="border rounded p-3 mb-3 {% if user_answer.is_correct %}border-success bg-success bg-opacity-10{% else %}border-danger bg-danger bg-opacity-10{% endif %}">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <h6>Question {{ forloop.counter }}</h6>
+                            {% if user_answer.is_correct %}
+                                <span class="badge bg-success">Correct</span>
+                            {% else %}
+                                <span class="badge bg-danger">Incorrect</span>
+                            {% endif %}
+                        </div>
+                        
+                        <p class="fw-bold">{{ user_answer.question.text }}</p>
+                        
+                        {% if user_answer.question.image %}
+                            <img src="{{ user_answer.question.image.url }}" class="img-fluid rounded mb-3" style="max-height: 200px;" alt="Question image">
+                        {% endif %}
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <strong>Your Answer:</strong>
+                                <p class="{% if user_answer.is_correct %}text-success{% else %}text-danger{% endif %}">
+                                    {% if user_answer.selected_answer %}
+                                        {{ user_answer.selected_answer.text }}
+                                    {% else %}
+                                        <em>No answer selected</em>
+                                    {% endif %}
+                                </p>
+                            </div>
+                            <div class="col-md-6">
+                                <strong>Correct Answer:</strong>
+                                <p class="text-success">{{ user_answer.question.get_correct_answer.text }}</p>
+                            </div>
+                        </div>
+                        
+                        {% if user_answer.question.explanation %}
+                            <div class="mt-2 p-2 bg-light rounded">
+                                <strong>Explanation:</strong>
+                                <p class="mb-0">{{ user_answer.question.explanation }}</p>
+                            </div>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <!-- Action Buttons -->
+            <div class="eco-card p-4 text-center">
+                <div class="d-grid gap-2 d-md-flex justify-content-md-center">
+                    <a href="{% url 'quizzes:quiz_detail' quiz.id %}" class="btn btn-eco">
+                        <i class="fas fa-redo"></i> Retake Quiz
+                    </a>
+                    <a href="{% url 'quizzes:category_detail' quiz.category.id %}" class="btn btn-outline-primary">
+                        <i class="fas fa-list"></i> More {{ quiz.category.name }} Quizzes
+                    </a>
+                    <a href="{% url 'accounts:dashboard' %}" class="btn btn-outline-success">
+                        <i class="fas fa-chart-line"></i> View Dashboard
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

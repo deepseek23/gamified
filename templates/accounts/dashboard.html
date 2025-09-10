@@ -1,0 +1,259 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard - EcoLearning Platform{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <!-- Sidebar -->
+        <div class="col-md-3">
+            <div class="sidebar">
+                <div class="text-center mb-4">
+                    {% if user.avatar %}
+                        <img src="{{ user.avatar.url }}" class="rounded-circle mb-2" width="80" height="80" alt="Avatar">
+                    {% else %}
+                        <div class="bg-success rounded-circle d-inline-flex align-items-center justify-content-center mb-2" style="width: 80px; height: 80px;">
+                            <i class="fas fa-user fa-2x text-white"></i>
+                        </div>
+                    {% endif %}
+                    <h5>{{ user.get_full_name|default:user.username }}</h5>
+                    <div class="d-flex justify-content-center gap-2 mt-2">
+                        <span class="token-badge small">
+                            <i class="fas fa-coins"></i> {{ user.total_eco_tokens }}
+                        </span>
+                        <span class="level-badge small">
+                            <i class="fas fa-star"></i> Level {{ user.level }}
+                        </span>
+                    </div>
+                </div>
+
+                <nav class="nav flex-column">
+                    <a class="nav-link active" href="#overview" data-section="overview">
+                        <i class="fas fa-chart-line"></i> Overview
+                    </a>
+                    <a class="nav-link" href="#progress" data-section="progress">
+                        <i class="fas fa-tasks"></i> Progress
+                    </a>
+                    <a class="nav-link" href="#achievements" data-section="achievements">
+                        <i class="fas fa-trophy"></i> Achievements
+                    </a>
+                    <a class="nav-link" href="#activity" data-section="activity">
+                        <i class="fas fa-history"></i> Activity
+                    </a>
+                </nav>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="col-md-9">
+            <!-- Overview Section -->
+            <div id="overview" class="dashboard-section">
+                <h2><i class="fas fa-chart-line"></i> Dashboard Overview</h2>
+                
+                <!-- Stats Cards -->
+                <div class="row mb-4">
+                    <div class="col-md-3">
+                        <div class="eco-card p-3 text-center">
+                            <i class="fas fa-brain fa-2x text-primary mb-2"></i>
+                            <h4>{{ user.profile.quizzes_completed }}</h4>
+                            <small>Quizzes Completed</small>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="eco-card p-3 text-center">
+                            <i class="fas fa-leaf fa-2x text-success mb-2"></i>
+                            <h4>{{ user.profile.tasks_completed }}</h4>
+                            <small>Eco-Tasks Done</small>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="eco-card p-3 text-center">
+                            <i class="fas fa-fire fa-2x text-warning mb-2"></i>
+                            <h4>{{ user.profile.streak_days }}</h4>
+                            <small>Current Streak</small>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="eco-card p-3 text-center">
+                            <i class="fas fa-award fa-2x text-info mb-2"></i>
+                            <h4>{{ user.achievements.count }}</h4>
+                            <small>Achievements</small>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="eco-card p-4 mb-4">
+                    <h5><i class="fas fa-bolt"></i> Quick Actions</h5>
+                    <div class="row">
+                        <div class="col-md-3">
+                            <a href="{% url 'quizzes:categories' %}" class="btn btn-outline-primary w-100 mb-2">
+                                <i class="fas fa-brain"></i><br>Take Quiz
+                            </a>
+                        </div>
+                        <div class="col-md-3">
+                            <a href="{% url 'eco_tasks:categories' %}" class="btn btn-outline-success w-100 mb-2">
+                                <i class="fas fa-tasks"></i><br>Do Eco-Task
+                            </a>
+                        </div>
+                        <div class="col-md-3">
+                            <a href="{% url 'rewards:store' %}" class="btn btn-outline-warning w-100 mb-2">
+                                <i class="fas fa-gift"></i><br>Spend Tokens
+                            </a>
+                        </div>
+                        <div class="col-md-3">
+                            <a href="{% url 'chatbot:chat' %}" class="btn btn-outline-info w-100 mb-2">
+                                <i class="fas fa-robot"></i><br>Ask EcoBot
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Activity -->
+                <div class="eco-card p-4">
+                    <h5><i class="fas fa-clock"></i> Recent Activity</h5>
+                    <div class="list-group list-group-flush">
+                        {% for transaction in user.token_transactions.all|slice:":5" %}
+                            <div class="list-group-item d-flex justify-content-between align-items-center">
+                                <div>
+                                    <i class="fas fa-coins text-warning me-2"></i>
+                                    {{ transaction.description }}
+                                    <small class="text-muted d-block">{{ transaction.created_at|timesince }} ago</small>
+                                </div>
+                                <span class="badge bg-success">+{{ transaction.amount }}</span>
+                            </div>
+                        {% empty %}
+                            <p class="text-muted">No recent activity. Start learning to see your progress here!</p>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Progress Section -->
+            <div id="progress" class="dashboard-section" style="display: none;">
+                <h2><i class="fas fa-tasks"></i> Learning Progress</h2>
+                
+                <div class="eco-card p-4 mb-4">
+                    <h5>Level Progress</h5>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Level {{ user.level }}</span>
+                        <span>{{ user.experience_points }} / {{ user.get_next_level_xp }} XP</span>
+                    </div>
+                    <div class="progress progress-eco mb-3">
+                        <div class="progress-bar progress-bar-eco" style="width: {{ user.get_level_progress }}%"></div>
+                    </div>
+                    <small class="text-muted">{{ user.get_level_progress|floatformat:1 }}% to next level</small>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="eco-card p-4">
+                            <h6><i class="fas fa-brain text-primary"></i> Quiz Performance</h6>
+                            <p><strong>Completed:</strong> {{ user.profile.quizzes_completed }}</p>
+                            <p><strong>Average Score:</strong> {{ user.profile.average_quiz_score|floatformat:1 }}%</p>
+                            <p><strong>Favorite Topic:</strong> {{ user.profile.favorite_topic|default:"Not determined yet" }}</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="eco-card p-4">
+                            <h6><i class="fas fa-leaf text-success"></i> Eco-Task Impact</h6>
+                            <p><strong>Tasks Completed:</strong> {{ user.profile.tasks_completed }}</p>
+                            <p><strong>Current Streak:</strong> {{ user.profile.streak_days }} days</p>
+                            <p><strong>Longest Streak:</strong> {{ user.profile.longest_streak }} days</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Achievements Section -->
+            <div id="achievements" class="dashboard-section" style="display: none;">
+                <h2><i class="fas fa-trophy"></i> Achievements</h2>
+                
+                <div class="eco-card p-4">
+                    <div class="row">
+                        {% for achievement in user.achievements.all %}
+                            <div class="col-md-4 mb-3">
+                                <div class="text-center p-3 border rounded">
+                                    <div class="fs-1 mb-2">{{ achievement.achievement.icon }}</div>
+                                    <h6>{{ achievement.achievement.name }}</h6>
+                                    <small class="text-muted">{{ achievement.achievement.description }}</small>
+                                    <div class="mt-2">
+                                        <small class="text-success">Earned {{ achievement.earned_at|timesince }} ago</small>
+                                    </div>
+                                </div>
+                            </div>
+                        {% empty %}
+                            <div class="col-12 text-center">
+                                <i class="fas fa-trophy fa-3x text-muted mb-3"></i>
+                                <h5>No achievements yet!</h5>
+                                <p class="text-muted">Complete quizzes and eco-tasks to earn your first achievements.</p>
+                                <a href="{% url 'quizzes:categories' %}" class="btn btn-eco">Start Learning</a>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Activity Section -->
+            <div id="activity" class="dashboard-section" style="display: none;">
+                <h2><i class="fas fa-history"></i> Activity History</h2>
+                
+                <div class="eco-card p-4">
+                    <div class="list-group list-group-flush">
+                        {% for transaction in user.token_transactions.all|slice:":10" %}
+                            <div class="list-group-item d-flex justify-content-between align-items-center">
+                                <div>
+                                    <i class="fas fa-coins text-warning me-2"></i>
+                                    <strong>{{ transaction.description }}</strong>
+                                    <small class="text-muted d-block">
+                                        {{ transaction.created_at|date:"M d, Y H:i" }} - {{ transaction.get_transaction_type_display }}
+                                    </small>
+                                </div>
+                                <div class="text-end">
+                                    <span class="badge bg-success">+{{ transaction.amount }}</span>
+                                    <small class="text-muted d-block">Balance: {{ transaction.balance_after }}</small>
+                                </div>
+                            </div>
+                        {% empty %}
+                            <div class="text-center py-4">
+                                <i class="fas fa-history fa-3x text-muted mb-3"></i>
+                                <h5>No activity yet!</h5>
+                                <p class="text-muted">Your learning activities will appear here.</p>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Dashboard section switching
+    const navLinks = document.querySelectorAll('.nav-link[data-section]');
+    const sections = document.querySelectorAll('.dashboard-section');
+    
+    navLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            // Remove active class from all links
+            navLinks.forEach(l => l.classList.remove('active'));
+            // Add active class to clicked link
+            this.classList.add('active');
+            
+            // Hide all sections
+            sections.forEach(section => section.style.display = 'none');
+            // Show target section
+            const targetSection = document.getElementById(this.dataset.section);
+            if (targetSection) {
+                targetSection.style.display = 'block';
+            }
+        });
+    });
+});
+</script>
+{% endblock %}

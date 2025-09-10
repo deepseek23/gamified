@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<div class="container mt-4">
+    <h2>{{ attempt.quiz.title }}</h2>
+    <p>Question {{ current_question_index|add:1 }} of {{ total_questions }}</p>
+
+    {% for question in questions %}
+        {% if question.id not in answered_questions %}
+            <div class="card p-3 mb-3">
+                <h5>{{ question.text }}</h5>
+
+                {% if question.question_type == "multiple_choice" or question.question_type == "true_false" %}
+                    <form method="post" action="{% url 'quizzes:submit_answer' attempt.id %}" class="answer-form">
+                        {% csrf_token %}
+                        <input type="hidden" name="question_id" value="{{ question.id }}">
+                        {% for answer in question.answers.all %}
+                            <div>
+                                <label>
+                                    <input type="radio" name="answer_id" value="{{ answer.id }}">
+                                    {{ answer.text }}
+                                </label>
+                            </div>
+                        {% endfor %}
+                        <button type="submit" class="btn btn-success mt-2">Submit</button>
+                    </form>
+                {% elif question.question_type == "fill_blank" %}
+                    <form method="post" action="{% url 'quizzes:submit_answer' attempt.id %}" class="answer-form">
+                        {% csrf_token %}
+                        <input type="hidden" name="question_id" value="{{ question.id }}">
+                        <input type="text" name="text_answer" class="form-control mb-2" placeholder="Your answer">
+                        <button type="submit" class="btn btn-success">Submit</button>
+                    </form>
+                {% endif %}
+            </div>
+            {% break %} {# Only show the next unanswered question #}
+        {% endif %}
+    {% endfor %}
+</div>
+
+<script>
+document.querySelectorAll(".answer-form").forEach(form => {
+    form.addEventListener("submit", function(e) {
+        e.preventDefault();
+        fetch(form.action, {
+            method: "POST",
+            headers: {
+                "X-CSRFToken": form.querySelector("[name=csrfmiddlewaretoken]").value,
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                question_id: form.querySelector("[name=question_id]").value,
+                answer_id: form.querySelector("input[name=answer_id]:checked")?.value,
+                text_answer: form.querySelector("input[name=text_answer]")?.value,
+            }),
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.is_complete) {
+                window.location.href = data.redirect_url;
+            } else {
+                location.reload(); // load next question
+            }
+        });
+    });
+});
+</script>
+{% endblock %}

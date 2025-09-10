@@ -1,0 +1,259 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ quiz.title }} - Eco Learning Platform{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-12">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'quizzes:categories' %}">Quiz Categories</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'quizzes:category_list' quiz.category.id %}">{{ quiz.category.name }}</a></li>
+                    <li class="breadcrumb-item active">{{ quiz.title }}</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="eco-card p-4 mb-4">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <div>
+                        <h1 class="h2 text-success mb-2">{{ quiz.title }}</h1>
+                        <div class="d-flex align-items-center mb-2">
+                            <span class="badge bg-primary me-2">{{ quiz.get_difficulty_display }}</span>
+                            <span class="badge bg-success me-2">
+                                <i class="fas fa-coins me-1"></i>{{ quiz.base_tokens_reward }} tokens
+                            </span>
+                            {% if quiz.perfect_score_bonus %}
+                            <span class="badge bg-warning me-2">
+                                <i class="fas fa-star me-1"></i>+{{ quiz.perfect_score_bonus }} bonus
+                            </span>
+                            {% endif %}
+                            <span class="badge bg-info">
+                                <i class="fas fa-clock me-1"></i>{{ quiz.max_time_minutes }} minutes
+                            </span>
+                        </div>
+                    </div>
+                    <div class="quiz-icon">
+                        <span style="font-size: 3rem;">{{ quiz.category.icon }}</span>
+                    </div>
+                </div>
+                
+                <p class="text-muted mb-4">{{ quiz.description }}</p>
+
+                <div class="row mb-4">
+                    <div class="col-md-3 col-6 text-center">
+                        <div class="stat-item">
+                            <div class="stat-number text-primary">{{ quiz.get_questions_count }}</div>
+                            <div class="stat-label">Questions</div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-6 text-center">
+                        <div class="stat-item">
+                            <div class="stat-number text-success">{{ quiz.base_tokens_reward }}</div>
+                            <div class="stat-label">Base Tokens</div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-6 text-center">
+                        <div class="stat-item">
+                            <div class="stat-number text-warning">+{{ quiz.perfect_score_bonus }}</div>
+                            <div class="stat-label">Perfect Bonus</div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-6 text-center">
+                        <div class="stat-item">
+                            <div class="stat-number text-info">{{ quiz.max_time_minutes }}</div>
+                            <div class="stat-label">Minutes</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <small class="text-muted">
+                            <i class="fas fa-star me-1"></i>
+                            Minimum Level: {{ quiz.min_level_required }}
+                        </small>
+                    </div>
+                {% if quiz.prerequisite_quizzes.exists %}
+                <div class="mb-4">
+                    <h6>Prerequisites</h6>
+                    <p class="text-muted">Complete these quizzes first:</p>
+                    {% for prereq in quiz.prerequisite_quizzes.all %}
+                        <span class="badge bg-secondary me-1">{{ prereq.title }}</span>
+                    {% endfor %}
+                </div>
+                {% endif %}
+                
+                <!-- Action Buttons -->
+                <div class="d-grid gap-2 d-md-flex">
+                    {% if user.is_authenticated %}
+                        {% if user.level >= quiz.min_level_required %}
+                            <a href="{% url 'quizzes:take_quiz' quiz.id %}" class="btn btn-eco btn-lg me-md-2">
+                                <i class="fas fa-play"></i> Start Quiz
+                            </a>
+                            {% if user_best_attempt %}
+                                <button class="btn btn-outline-info" data-bs-toggle="modal" data-bs-target="#resultsModal">
+                                    <i class="fas fa-chart-line"></i> View Results
+                                </button>
+                            {% endif %}
+                        {% else %}
+                            <button class="btn btn-secondary btn-lg" disabled>
+                                <i class="fas fa-lock"></i> Requires Level {{ quiz.min_level_required }}
+                            </button>
+                        {% endif %}
+                    {% else %}
+                        <a href="{% url 'accounts:login' %}" class="btn btn-eco btn-lg">
+                            <i class="fas fa-sign-in-alt"></i> Login to Take Quiz
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <!-- Sidebar -->
+        <div class="col-md-4">
+            <!-- Your Progress -->
+            {% if user.is_authenticated and user_attempts %}
+            <div class="eco-card p-4 mb-4">
+                <h5><i class="fas fa-chart-line"></i> Your Progress</h5>
+                
+                {% if user_best_attempt %}
+                    <div class="text-center mb-3">
+                        <div class="display-6 fw-bold text-success">{{ user_best_attempt.score|floatformat:1 }}%</div>
+                        <small class="text-muted">Best Score</small>
+                    </div>
+                    
+                    <div class="row text-center">
+                        <div class="col-6">
+                            <div class="fw-bold">{{ user_best_attempt.tokens_earned }}</div>
+                            <small class="text-muted">Tokens Earned</small>
+                        </div>
+                        <div class="col-6">
+                            <div class="fw-bold">{{ user_attempts.count }}</div>
+                            <small class="text-muted">Attempts</small>
+                        </div>
+                    </div>
+                    
+                    {% if user_best_attempt.is_perfect_score %}
+                        <div class="alert alert-success mt-3">
+                            <i class="fas fa-trophy"></i> Perfect Score! 🎉
+                        </div>
+                    {% endif %}
+                {% else %}
+                    <p class="text-muted text-center">You haven't taken this quiz yet.</p>
+                {% endif %}
+            </div>
+            {% endif %}
+            
+            <!-- Quiz Statistics -->
+            <div class="eco-card p-4 mb-4">
+                <h5><i class="fas fa-chart-bar"></i> Quiz Statistics</h5>
+                
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between">
+                        <span>Average Score</span>
+                        <span class="fw-bold">{{ quiz.get_average_score|floatformat:1 }}%</span>
+                    </div>
+                </div>
+                
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between">
+                        <span>Completion Rate</span>
+                        <span class="fw-bold">{{ quiz.get_completion_rate|floatformat:1 }}%</span>
+                    </div>
+                </div>
+                
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between">
+                        <span>Total Attempts</span>
+                        <span class="fw-bold">{{ quiz.attempts.count }}</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Related Quizzes -->
+            {% if related_quizzes %}
+            <div class="eco-card p-4">
+                <h5><i class="fas fa-lightbulb"></i> Related Quizzes</h5>
+                
+                {% for related_quiz in related_quizzes %}
+                    <div class="d-flex align-items-center mb-2">
+                        <div class="me-3">
+                            {% if related_quiz.difficulty == 'beginner' %}
+                                <span class="badge bg-success">{{ related_quiz.get_difficulty_display }}</span>
+                            {% elif related_quiz.difficulty == 'intermediate' %}
+                                <span class="badge bg-warning">{{ related_quiz.get_difficulty_display }}</span>
+                            {% else %}
+                                <span class="badge bg-danger">{{ related_quiz.get_difficulty_display }}</span>
+                            {% endif %}
+                        </div>
+                        <div class="flex-grow-1">
+                            <a href="{% url 'quizzes:quiz_detail' related_quiz.id %}" class="text-decoration-none">
+                                <small class="fw-bold">{{ related_quiz.title }}</small>
+                            </a>
+                            <div class="text-muted small">{{ related_quiz.base_tokens_reward }} tokens</div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- Results Modal -->
+{% if user_best_attempt %}
+<div class="modal fade" id="resultsModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Quiz Results</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="text-center mb-4">
+                    <div class="display-4 fw-bold text-success">{{ user_best_attempt.score|floatformat:1 }}%</div>
+                    <p class="lead">{{ user_best_attempt.correct_answers }} out of {{ user_best_attempt.total_questions }} correct</p>
+                </div>
+                
+                <div class="row text-center">
+                    <div class="col-md-4">
+                        <i class="fas fa-coins fa-2x text-warning mb-2"></i>
+                        <div class="fw-bold">{{ user_best_attempt.tokens_earned }}</div>
+                        <small class="text-muted">Tokens Earned</small>
+                    </div>
+                    <div class="col-md-4">
+                        <i class="fas fa-star fa-2x text-info mb-2"></i>
+                        <div class="fw-bold">{{ user_best_attempt.experience_gained }}</div>
+                        <small class="text-muted">XP Gained</small>
+                    </div>
+                    <div class="col-md-4">
+                        <i class="fas fa-clock fa-2x text-primary mb-2"></i>
+                        <div class="fw-bold">{{ user_best_attempt.time_taken_seconds|floatformat:0 }}s</div>
+                        <small class="text-muted">Time Taken</small>
+                    </div>
+                </div>
+                
+                {% if user_best_attempt.is_perfect_score %}
+                    <div class="alert alert-success mt-4">
+                        <i class="fas fa-trophy"></i> Congratulations! You achieved a perfect score! 🎉
+                    </div>
+                {% endif %}
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <a href="{% url 'quizzes:take_quiz' quiz.id %}" class="btn btn-eco">
+                    <i class="fas fa-redo"></i> Retake Quiz
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}
