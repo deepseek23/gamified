@@ -1,0 +1,710 @@
+{% extends 'base.html' %}
+
+{% block title %}Home - EcoLearning Platform{% endblock %}
+
+{% block content %}
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+    
+    @keyframes pixelate {
+        0%, 100% { transform: translate(0, 0); }
+        25% { transform: translate(2px, -2px); }
+        50% { transform: translate(-2px, 2px); }
+        75% { transform: translate(2px, 2px); }
+    }
+    
+    @keyframes float {
+        0%, 100% { transform: translateY(0px); }
+        50% { transform: translateY(-15px); }
+    }
+    
+    @keyframes blink {
+        0%, 49% { opacity: 1; }
+        50%, 100% { opacity: 0; }
+    }
+    
+    @keyframes scanline {
+        0% { transform: translateY(-100%); }
+        100% { transform: translateY(100%); }
+    }
+    
+    @keyframes pulse-glow {
+        0%, 100% { box-shadow: 0 0 20px rgba(34, 197, 94, 0.5), 0 0 40px rgba(34, 197, 94, 0.3), inset 0 0 20px rgba(34, 197, 94, 0.1); }
+        50% { box-shadow: 0 0 30px rgba(34, 197, 94, 0.8), 0 0 60px rgba(34, 197, 94, 0.5), inset 0 0 30px rgba(34, 197, 94, 0.2); }
+    }
+    
+    @keyframes coin-spin {
+        0% { transform: rotateY(0deg); }
+        100% { transform: rotateY(360deg); }
+    }
+    
+    * {
+        image-rendering: pixelated;
+        image-rendering: -moz-crisp-edges;
+        image-rendering: crisp-edges;
+    }
+    
+    .retro-text {
+        font-family: 'Press Start 2P', cursive;
+        text-shadow: 4px 4px 0px rgba(0, 0, 0, 0.3);
+    }
+    
+    .pixel-border {
+        border: 4px solid #2d3748;
+        box-shadow: 
+            0 0 0 4px #4a5568,
+            0 0 0 8px #2d3748,
+            8px 8px 0 8px rgba(0, 0, 0, 0.3);
+    }
+    
+    .hero-arcade {
+        background: 
+            linear-gradient(180deg, #1a472a 0%, #0f2819 50%, #0a1810 100%);
+        position: relative;
+        border-radius: 0;
+        border: 6px solid #22c55e;
+        box-shadow: 
+            0 0 30px rgba(34, 197, 94, 0.5),
+            inset 0 0 50px rgba(0, 0, 0, 0.5);
+        overflow: hidden;
+    }
+    
+    .hero-arcade::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: 
+            repeating-linear-gradient(
+                0deg,
+                rgba(34, 197, 94, 0.03) 0px,
+                transparent 2px,
+                transparent 4px
+            );
+        pointer-events: none;
+        animation: scanline 8s linear infinite;
+    }
+    
+    .hero-arcade::after {
+        content: '🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲';
+        position: absolute;
+        bottom: -10px;
+        left: 0;
+        right: 0;
+        font-size: 3rem;
+        opacity: 0.3;
+        letter-spacing: 1rem;
+    }
+    
+    .pixel-cloud {
+        position: absolute;
+        font-size: 2rem;
+        opacity: 0.2;
+        animation: float 6s ease-in-out infinite;
+    }
+    
+    .pixel-cloud:nth-child(1) { top: 20%; left: 10%; animation-delay: 0s; }
+    .pixel-cloud:nth-child(2) { top: 40%; right: 15%; animation-delay: 2s; }
+    .pixel-cloud:nth-child(3) { top: 60%; left: 20%; animation-delay: 4s; }
+    
+    .arcade-btn {
+        font-family: 'Press Start 2P', cursive;
+        font-size: 0.7rem;
+        padding: 1.2rem 2rem;
+        border: 4px solid #000;
+        border-radius: 0;
+        background: linear-gradient(180deg, #fbbf24 0%, #f59e0b 100%);
+        color: #000;
+        text-transform: uppercase;
+        box-shadow: 
+            0 6px 0 #b45309,
+            0 8px 20px rgba(0, 0, 0, 0.5);
+        transition: all 0.1s ease;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .arcade-btn:hover {
+        transform: translateY(3px);
+        box-shadow: 
+            0 3px 0 #b45309,
+            0 5px 15px rgba(0, 0, 0, 0.5);
+        color: #000;
+    }
+    
+    .arcade-btn:active {
+        transform: translateY(6px);
+        box-shadow: 
+            0 0 0 #b45309,
+            0 2px 10px rgba(0, 0, 0, 0.5);
+    }
+    
+    .arcade-btn-green {
+        background: linear-gradient(180deg, #22c55e 0%, #16a34a 100%);
+        box-shadow: 
+            0 6px 0 #15803d,
+            0 8px 20px rgba(0, 0, 0, 0.5);
+    }
+    
+    .arcade-btn-green:hover {
+        box-shadow: 
+            0 3px 0 #15803d,
+            0 5px 15px rgba(0, 0, 0, 0.5);
+    }
+    
+    .stat-arcade {
+        background: linear-gradient(180deg, #1f2937 0%, #111827 100%);
+        border: 4px solid #4ade80;
+        border-radius: 0;
+        padding: 1.5rem;
+        text-align: center;
+        box-shadow: 
+            0 0 20px rgba(74, 222, 128, 0.3),
+            inset 0 0 30px rgba(0, 0, 0, 0.5);
+        position: relative;
+        transition: all 0.2s ease;
+    }
+    
+    .stat-arcade:hover {
+        transform: scale(1.05);
+        border-color: #22c55e;
+        animation: pulse-glow 1.5s ease-in-out infinite;
+    }
+    
+    .stat-arcade::before {
+        content: '';
+        position: absolute;
+        top: -4px;
+        left: -4px;
+        right: -4px;
+        bottom: -4px;
+        border: 2px solid rgba(74, 222, 128, 0.3);
+        pointer-events: none;
+    }
+    
+    .pixel-icon {
+        font-size: 3rem;
+        filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.5));
+        animation: pixelate 0.5s steps(4) infinite;
+    }
+    
+    .level-badge {
+        display: inline-block;
+        background: linear-gradient(135deg, #fbbf24, #f59e0b);
+        border: 3px solid #000;
+        padding: 0.5rem 1rem;
+        font-family: 'Press Start 2P', cursive;
+        font-size: 1.2rem;
+        color: #000;
+        box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.5);
+    }
+    
+    .progress-pixel {
+        height: 30px;
+        background: #1f2937;
+        border: 3px solid #000;
+        border-radius: 0;
+        overflow: hidden;
+        position: relative;
+        box-shadow: inset 0 4px 8px rgba(0, 0, 0, 0.5);
+    }
+    
+    .progress-pixel-bar {
+        height: 100%;
+        background: 
+            repeating-linear-gradient(
+                90deg,
+                #22c55e 0px,
+                #22c55e 10px,
+                #16a34a 10px,
+                #16a34a 20px
+            );
+        box-shadow: 0 0 10px rgba(34, 197, 94, 0.5);
+        transition: width 0.5s ease;
+    }
+    
+    .game-card {
+        background: linear-gradient(180deg, #2d3748 0%, #1a202c 100%);
+        border: 4px solid #4a5568;
+        border-radius: 0;
+        padding: 2rem;
+        box-shadow: 
+            8px 8px 0 rgba(0, 0, 0, 0.3),
+            0 0 30px rgba(0, 0, 0, 0.5);
+        transition: all 0.2s ease;
+        height: 100%;
+        position: relative;
+    }
+    
+    .game-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, 
+            transparent 0%,
+            #22c55e 20%,
+            #fbbf24 40%,
+            #ef4444 60%,
+            #3b82f6 80%,
+            transparent 100%
+        );
+    }
+    
+    .game-card:hover {
+        transform: translate(-4px, -4px);
+        box-shadow: 
+            12px 12px 0 rgba(0, 0, 0, 0.3),
+            0 0 40px rgba(34, 197, 94, 0.4);
+        border-color: #22c55e;
+    }
+    
+    .game-icon {
+        font-size: 4rem;
+        margin-bottom: 1rem;
+        filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.5));
+    }
+    
+    .pixel-title {
+        font-family: 'Press Start 2P', cursive;
+        font-size: 0.9rem;
+        line-height: 1.8;
+        margin-bottom: 1rem;
+        color: #fff;
+        text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.5);
+    }
+    
+    .level-circle {
+        width: 120px;
+        height: 120px;
+        border: 6px solid #000;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-family: 'Press Start 2P', cursive;
+        font-size: 2rem;
+        color: #fff;
+        box-shadow: 
+            0 0 20px rgba(59, 130, 246, 0.5),
+            inset 0 0 20px rgba(0, 0, 0, 0.3),
+            0 8px 0 #1e40af,
+            0 10px 20px rgba(0, 0, 0, 0.5);
+        position: relative;
+        transition: all 0.2s ease;
+    }
+    
+    .level-circle:hover {
+        transform: translateY(-5px);
+        box-shadow: 
+            0 0 30px rgba(59, 130, 246, 0.8),
+            inset 0 0 20px rgba(0, 0, 0, 0.3),
+            0 13px 0 #1e40af,
+            0 15px 30px rgba(0, 0, 0, 0.5);
+    }
+    
+    .level-circle.green {
+        background: linear-gradient(135deg, #22c55e, #16a34a);
+        box-shadow: 
+            0 0 20px rgba(34, 197, 94, 0.5),
+            inset 0 0 20px rgba(0, 0, 0, 0.3),
+            0 8px 0 #15803d,
+            0 10px 20px rgba(0, 0, 0, 0.5);
+    }
+    
+    .level-circle.green:hover {
+        box-shadow: 
+            0 0 30px rgba(34, 197, 94, 0.8),
+            inset 0 0 20px rgba(0, 0, 0, 0.3),
+            0 13px 0 #15803d,
+            0 15px 30px rgba(0, 0, 0, 0.5);
+    }
+    
+    .level-circle.yellow {
+        background: linear-gradient(135deg, #fbbf24, #f59e0b);
+        box-shadow: 
+            0 0 20px rgba(251, 191, 36, 0.5),
+            inset 0 0 20px rgba(0, 0, 0, 0.3),
+            0 8px 0 #d97706,
+            0 10px 20px rgba(0, 0, 0, 0.5);
+    }
+    
+    .level-circle.yellow:hover {
+        box-shadow: 
+            0 0 30px rgba(251, 191, 36, 0.8),
+            inset 0 0 20px rgba(0, 0, 0, 0.3),
+            0 13px 0 #d97706,
+            0 15px 30px rgba(0, 0, 0, 0.5);
+    }
+    
+    .impact-arcade {
+        background: linear-gradient(180deg, #065f46 0%, #064e3b 100%);
+        border: 6px solid #22c55e;
+        border-radius: 0;
+        padding: 3rem 2rem;
+        box-shadow: 
+            0 0 40px rgba(34, 197, 94, 0.4),
+            inset 0 0 50px rgba(0, 0, 0, 0.3);
+        position: relative;
+    }
+    
+    .impact-arcade::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: 
+            repeating-linear-gradient(
+                0deg,
+                rgba(34, 197, 94, 0.1) 0px,
+                transparent 2px,
+                transparent 4px
+            );
+        pointer-events: none;
+    }
+    
+    .counter-arcade {
+        font-family: 'Press Start 2P', cursive;
+        font-size: 2.5rem;
+        color: #fbbf24;
+        text-shadow: 
+            3px 3px 0 rgba(0, 0, 0, 0.5),
+            0 0 20px rgba(251, 191, 36, 0.5);
+        animation: blink 2s step-end infinite;
+    }
+    
+    .cta-arcade {
+        background: linear-gradient(180deg, #7c3aed 0%, #6d28d9 100%);
+        border: 6px solid #a78bfa;
+        border-radius: 0;
+        padding: 4rem 2rem;
+        box-shadow: 
+            0 0 50px rgba(124, 58, 237, 0.5),
+            inset 0 0 50px rgba(0, 0, 0, 0.3);
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .cta-arcade::before {
+        content: '🌍🌿🌱💚🌲🌳';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 15rem;
+        opacity: 0.1;
+        animation: float 8s ease-in-out infinite;
+    }
+    
+    .insert-coin {
+        display: inline-block;
+        background: #000;
+        color: #fbbf24;
+        padding: 0.5rem 1.5rem;
+        border: 3px solid #fbbf24;
+        font-family: 'Press Start 2P', cursive;
+        font-size: 0.6rem;
+        animation: blink 1.5s step-end infinite;
+        margin-bottom: 1.5rem;
+        box-shadow: 0 0 20px rgba(251, 191, 36, 0.5);
+    }
+    
+    .pixel-coin {
+        display: inline-block;
+        animation: coin-spin 2s linear infinite;
+    }
+    
+    .game-label {
+        font-family: 'Press Start 2P', cursive;
+        font-size: 0.7rem;
+        color: #9ca3af;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+    }
+    
+    .screen-border {
+        border: 8px solid #1f2937;
+        box-shadow: 
+            inset 0 0 30px rgba(0, 0, 0, 0.8),
+            0 0 40px rgba(0, 0, 0, 0.5);
+        border-radius: 12px;
+        padding: 1rem;
+        background: #000;
+    }
+</style>
+
+<div class="container py-4">
+    <!-- Hero Section -->
+    <div class="row mb-5">
+        <div class="col-12">
+            <div class="hero-arcade p-5">
+                <div class="pixel-cloud">☁️</div>
+                <div class="pixel-cloud">☁️</div>
+                <div class="pixel-cloud">☁️</div>
+                
+                <div class="text-center text-white position-relative" style="z-index: 2;">
+                    <div class="insert-coin mb-4">⚡ PRESS START ⚡</div>
+                    <h1 class="retro-text mb-4" style="font-size: 1.8rem; color: #22c55e; line-height: 2;">
+                        🌱 ECOLEARNING 🌱
+                    </h1>
+                    <p class="mb-4" style="font-size: 0.9rem; max-width: 600px; margin: 0 auto; line-height: 1.8;">
+                        SAVE THE PLANET THROUGH EPIC QUESTS, EARN TOKENS, AND LEVEL UP YOUR ECO-WARRIOR SKILLS!
+                    </p>
+                    {% if not user.is_authenticated %}
+                        <div class="d-flex gap-3 justify-content-center flex-wrap">
+                            <a href="{% url 'accounts:register' %}" class="arcade-btn">
+                                ▶ JOIN GAME
+                            </a>
+                            <a href="{% url 'accounts:login' %}" class="arcade-btn arcade-btn-green">
+                                ⚡ LOGIN
+                            </a>
+                        </div>
+                    {% else %}
+                        <a href="{% url 'accounts:dashboard' %}" class="arcade-btn">
+                            📊 DASHBOARD
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% if user.is_authenticated %}
+    <!-- User Dashboard Preview -->
+    <div class="row mb-5 g-4">
+        <div class="col-md-6 col-lg-3">
+            <div class="stat-arcade">
+                <div class="pixel-icon mb-3">⭐</div>
+                <div class="level-badge mb-3">LVL {{ user.level }}</div>
+                <div class="progress-pixel mb-3">
+                    <div class="progress-pixel-bar" style="width: {{ user.get_level_progress }}%"></div>
+                </div>
+                <p class="game-label mb-0">{{ user.experience_points }} XP</p>
+            </div>
+        </div>
+        <div class="col-md-6 col-lg-3">
+            <div class="stat-arcade">
+                <div class="pixel-icon mb-3">
+                    <span class="pixel-coin">🪙</span>
+                </div>
+                <h3 class="retro-text mb-3" style="font-size: 1.5rem; color: #fbbf24;">{{ user.total_eco_tokens }}</h3>
+                <p class="game-label mb-0">ECO-TOKENS</p>
+            </div>
+        </div>
+        <div class="col-md-6 col-lg-3">
+            <div class="stat-arcade">
+                <div class="pixel-icon mb-3">🧠</div>
+                <h3 class="retro-text mb-3" style="font-size: 1.5rem; color: #22c55e;">{{ user.profile.quizzes_completed|default:0 }}</h3>
+                <p class="game-label mb-0">QUIZZES WON</p>
+            </div>
+        </div>
+        <div class="col-md-6 col-lg-3">
+            <div class="stat-arcade">
+                <div class="pixel-icon mb-3">✅</div>
+                <h3 class="retro-text mb-3" style="font-size: 1.5rem; color: #3b82f6;">{{ user.profile.tasks_completed|default:0 }}</h3>
+                <p class="game-label mb-0">TASKS DONE</p>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Features Section -->
+    <div class="row mb-5">
+        <div class="col-12 mb-5 text-center">
+            <h2 class="retro-text mb-3" style="font-size: 1.5rem; color: #22c55e;">
+                🎮 GAME MODES 🎮
+            </h2>
+            <p class="game-label">CHOOSE YOUR ADVENTURE</p>
+        </div>
+        
+        <div class="col-md-6 col-lg-3 mb-4">
+            <div class="game-card text-center">
+                <div class="game-icon">🧠</div>
+                <h5 class="pixel-title">QUIZ BATTLE</h5>
+                <p class="text-white mb-4" style="font-size: 0.85rem; line-height: 1.6;">
+                    Test your eco-knowledge and earn tokens for every correct answer!
+                </p>
+                <a href="{% url 'quizzes:categories' %}" class="arcade-btn arcade-btn-green" style="font-size: 0.6rem; padding: 0.8rem 1.5rem;">
+                    START
+                </a>
+            </div>
+        </div>
+        
+        <div class="col-md-6 col-lg-3 mb-4">
+            <div class="game-card text-center">
+                <div class="game-icon">🌿</div>
+                <h5 class="pixel-title">ECO QUEST</h5>
+                <p class="text-white mb-4" style="font-size: 0.85rem; line-height: 1.6;">
+                    Complete real-world missions and save the planet IRL!
+                </p>
+                <a href="{% url 'eco_tasks:categories' %}" class="arcade-btn arcade-btn-green" style="font-size: 0.6rem; padding: 0.8rem 1.5rem;">
+                    START
+                </a>
+            </div>
+        </div>
+        
+        <div class="col-md-6 col-lg-3 mb-4">
+            <div class="game-card text-center">
+                <div class="game-icon">🏆</div>
+                <h5 class="pixel-title">RANKINGS</h5>
+                <p class="text-white mb-4" style="font-size: 0.85rem; line-height: 1.6;">
+                    Challenge players worldwide and claim the top spot!
+                </p>
+                <a href="{% url 'leaderboards:home' %}" class="arcade-btn arcade-btn-green" style="font-size: 0.6rem; padding: 0.8rem 1.5rem;">
+                    START
+                </a>
+            </div>
+        </div>
+        
+        <div class="col-md-6 col-lg-3 mb-4">
+            <div class="game-card text-center">
+                <div class="game-icon">🎁</div>
+                <h5 class="pixel-title">LOOT SHOP</h5>
+                <p class="text-white mb-4" style="font-size: 0.85rem; line-height: 1.6;">
+                    Spend tokens on epic rewards, badges, and donations!
+                </p>
+                <a href="{% url 'rewards:store' %}" class="arcade-btn arcade-btn-green" style="font-size: 0.6rem; padding: 0.8rem 1.5rem;">
+                    START
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- How It Works -->
+    <div class="row mb-5">
+        <div class="col-12 mb-5 text-center">
+            <h2 class="retro-text mb-3" style="font-size: 1.5rem; color: #fbbf24;">
+                ⚡ GAMEPLAY ⚡
+            </h2>
+            <p class="game-label">THREE STEPS TO VICTORY</p>
+        </div>
+        
+        <div class="col-md-4 mb-4">
+            <div class="text-center">
+                <div class="level-circle mb-4">
+                    1
+                </div>
+                <h5 class="pixel-title">LEARN & QUIZ</h5>
+                <p class="text-muted" style="font-size: 0.9rem;">
+                    Answer questions, show off your eco-smarts, and rack up those tokens!
+                </p>
+            </div>
+        </div>
+        
+        <div class="col-md-4 mb-4">
+            <div class="text-center">
+                <div class="level-circle green mb-4">
+                    2
+                </div>
+                <h5 class="pixel-title">TAKE ACTION</h5>
+                <p class="text-muted" style="font-size: 0.9rem;">
+                    Complete real eco-missions in your hood and document your hero moves!
+                </p>
+            </div>
+        </div>
+        
+        <div class="col-md-4 mb-4">
+            <div class="text-center">
+                <div class="level-circle yellow mb-4">
+                    3
+                </div>
+                <h5 class="pixel-title">EARN REWARDS</h5>
+                <p class="text-muted" style="font-size: 0.9rem;">
+                    Cash in tokens for prizes, climb leaderboards, and fund green causes!
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stats Section -->
+    <div class="row mb-5">
+        <div class="col-12">
+            <div class="impact-arcade text-center">
+                <h3 class="retro-text mb-5" style="font-size: 1.3rem; color: #fbbf24; line-height: 2;">
+                    🌟 HALL OF FAME 🌟
+                </h3>
+                <div class="row g-4">
+                    <div class="col-6 col-md-3">
+                        <div class="counter-arcade counter mb-2" data-target="1250">0</div>
+                        <p class="game-label">PLAYERS</p>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="counter-arcade counter mb-2" data-target="5680">0</div>
+                        <p class="game-label">QUIZZES</p>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="counter-arcade counter mb-2" data-target="3420">0</div>
+                        <p class="game-label">QUESTS</p>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="counter-arcade counter mb-2" data-target="89340">0</div>
+                        <p class="game-label">TOKENS</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Call to Action -->
+    {% if not user.is_authenticated %}
+    <div class="row">
+        <div class="col-12">
+            <div class="cta-arcade text-center text-white position-relative">
+                <div class="insert-coin mb-4">⚡ GAME OVER? NOT YET! ⚡</div>
+                <h3 class="retro-text mb-4" style="font-size: 1.3rem; line-height: 2;">
+                    JOIN THE ECO REVOLUTION!
+                </h3>
+                <p class="mb-4" style="font-size: 0.95rem; max-width: 600px; margin: 0 auto;">
+                    Thousands of eco-warriors are already playing. Be a hero, save the Earth, and have fun doing it!
+                </p>
+                <a href="{% url 'accounts:register' %}" class="arcade-btn" style="font-size: 0.75rem;">
+                    🚀 REGISTER TO PLAY
+                </a>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<script>
+// Counter animation
+document.addEventListener('DOMContentLoaded', function() {
+    const counters = document.querySelectorAll('.counter');
+    
+    counters.forEach(counter => {
+        const target = parseInt(counter.getAttribute('data-target'));
+        const duration = 2000;
+        const increment = target / (duration / 50);
+        let current = 0;
+        
+        const updateCounter = () => {
+            current += increment;
+            if (current < target) {
+                counter.textContent = Math.floor(current).toLocaleString();
+                requestAnimationFrame(updateCounter);
+            } else {
+                counter.textContent = target.toLocaleString();
+            }
+        };
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    updateCounter();
+                    observer.unobserve(entry.target);
+                }
+            });
+        });
+        
+        observer.observe(counter);
+    });
+});
+</script>
+{% endblock %}
