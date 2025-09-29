@@ -9,155 +9,478 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <!-- Google Fonts - Poppins -->
+    <!-- Google Fonts - Press Start 2P & Poppins -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
     <!-- Custom CSS -->
     <style>
         :root {
-            --eco-green: #4CAF50;
-            --eco-light-green: #e8f5e9;
-            --eco-dark-green: #2E7D32;
-            --eco-blue: #2196F3;
-            --eco-yellow: #FFC107;
-            --eco-orange: #FF9800;
-            --eco-purple: #9C27B0;
-            --font-family-sans-serif: 'Poppins', sans-serif;
+            --eco-green: #22c55e;
+            --eco-light-green: #dcfce7;
+            --eco-dark-green: #15803d;
+            --eco-blue: #3b82f6;
+            --eco-yellow: #fbbf24;
+            --eco-orange: #f97316;
+            --eco-purple: #a855f7;
+            --pixel-black: #1a1a1a;
+            --pixel-gray: #2d3748;
+            --arcade-border: #4a5568;
+        }
+        
+        * {
+            image-rendering: pixelated;
+            image-rendering: -moz-crisp-edges;
+            image-rendering: crisp-edges;
         }
         
         body {
-            font-family: var(--font-family-sans-serif);
-            background-color: #f7f9fc;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='49' viewBox='0 0 28 49'%3E%3Cg fill-rule='evenodd'%3E%3Cg id='hexagons' fill='%23e0e0e0' fill-opacity='0.2' fill-rule='nonzero'%3E%3Cpath d='M13.99 9.25l13 7.5v15l-13 7.5L1 31.75v-15l12.99-7.5zM3 17.9v12.7l10.99 6.34 11-6.35V17.9l-11-6.34L3 17.9zM0 15l12.99 7.5V30L0 22.5zM15 30v-7.5L28 15v7.5z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            font-family: 'Poppins', sans-serif;
+            background-color: #0f172a;
+            background-image: 
+                repeating-linear-gradient(
+                    0deg,
+                    rgba(34, 197, 94, 0.03) 0px,
+                    transparent 2px,
+                    transparent 4px
+                ),
+                radial-gradient(circle at 20% 50%, rgba(34, 197, 94, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(59, 130, 246, 0.1) 0%, transparent 50%);
             min-height: 100vh;
+            color: #e2e8f0;
+        }
+        
+        .retro-text {
+            font-family: 'Press Start 2P', cursive;
+            text-shadow: 3px 3px 0px rgba(0, 0, 0, 0.5);
+        }
+        
+        /* Navbar Arcade Style */
+        .navbar {
+            background: linear-gradient(180deg, #1f2937 0%, #111827 100%) !important;
+            border-bottom: 4px solid var(--eco-green);
+            box-shadow: 
+                0 4px 0 var(--eco-dark-green),
+                0 8px 30px rgba(0, 0, 0, 0.5);
+            padding: 1rem 0;
         }
         
         .navbar-brand {
-            font-weight: bold;
+            font-family: 'Press Start 2P', cursive !important;
             color: var(--eco-green) !important;
+            font-size: 1.2rem;
+            text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.5);
+            transition: all 0.2s ease;
         }
         
-        .eco-card {
-            border: none;
-            border-radius: 15px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-        
-        .eco-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
-        }
-        
-        .btn-eco {
-            background: linear-gradient(45deg, var(--eco-green), #20c997);
-            border: none;
-            border-radius: 25px;
-            color: white;
-            font-weight: 500;
-            padding: 10px 25px;
-            transition: all 0.3s ease;
-        }
-        
-        .btn-eco:hover {
-            background: linear-gradient(45deg, #20c997, var(--eco-green));
-            transform: translateY(-2px);
-            color: white;
-        }
-        
-        .progress-eco {
-            height: 8px;
-            border-radius: 10px;
-            background-color: var(--eco-light-green);
-        }
-        
-        .progress-bar-eco {
-            background: linear-gradient(90deg, var(--eco-green), #81C784);
-            border-radius: 10px;
-            transition: width 0.6s ease;
-        }
-        
-        .token-badge {
-            background: linear-gradient(45deg, var(--eco-yellow), #FFCA28);
-            color: #333;
-            border-radius: 20px;
-            padding: 5px 15px;
-            font-weight: 600;
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-            transition: transform 0.3s ease;
-        }
-        .token-badge:hover {
-            transform: scale(1.1);
-        }
-        
-        .level-badge {
-            background: linear-gradient(45deg, var(--eco-blue), #64B5F6);
-            color: white;
-            border-radius: 20px;
-            padding: 5px 15px;
-            font-weight: 600;
-            transition: transform 0.3s ease;
-        }
-        .level-badge:hover {
-            transform: scale(1.1);
-        }
-        
-        .sidebar {
-            background: white;
-            border-radius: 15px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            padding: 20px;
-            margin-bottom: 20px;
+        .navbar-brand:hover {
+            color: var(--eco-yellow) !important;
+            transform: scale(1.05);
         }
         
         .nav-link {
-            transition: all 0.3s ease;
-            border-radius: 8px;
+            color: #94a3b8 !important;
+            font-weight: 600;
+            padding: 0.5rem 1rem !important;
+            border-radius: 0;
+            transition: all 0.2s ease;
+            border: 2px solid transparent;
+            margin: 0 0.2rem;
         }
-        .nav-link:hover, .nav-link.active {
-            background: var(--eco-light-green) !important;
-            color: var(--eco-dark-green) !important;
+        
+        .nav-link:hover {
+            color: var(--eco-green) !important;
+            background: rgba(34, 197, 94, 0.1) !important;
+            border: 2px solid var(--eco-green);
             transform: translateY(-2px);
         }
         
-        .achievement-badge {
-            display: inline-block;
-            background: linear-gradient(45deg, #ffd700, #ffed4e);
-            color: #333;
-            padding: 8px 12px;
-            border-radius: 20px;
-            font-size: 0.9em;
-            margin: 2px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        .nav-link.active {
+            background: linear-gradient(180deg, var(--eco-green), var(--eco-dark-green)) !important;
+            color: #000 !important;
+            border: 2px solid var(--eco-yellow);
+            box-shadow: 0 4px 0 var(--eco-dark-green);
         }
         
+        /* Arcade Token Badge */
+        .token-badge {
+            background: linear-gradient(180deg, #fbbf24 0%, #f59e0b 100%);
+            color: #000;
+            border: 3px solid #000;
+            border-radius: 0;
+            padding: 0.4rem 0.8rem;
+            font-family: 'Press Start 2P', cursive;
+            font-size: 0.6rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            box-shadow: 
+                0 4px 0 #b45309,
+                0 6px 15px rgba(0, 0, 0, 0.5);
+            transition: all 0.2s ease;
+        }
+        
+        .token-badge:hover {
+            transform: translateY(2px);
+            box-shadow: 
+                0 2px 0 #b45309,
+                0 4px 10px rgba(0, 0, 0, 0.5);
+        }
+        
+        /* Level Badge */
+        .level-badge {
+            background: linear-gradient(180deg, #3b82f6, #1d4ed8);
+            color: white;
+            border: 3px solid #000;
+            border-radius: 0;
+            padding: 0.4rem 0.8rem;
+            font-family: 'Press Start 2P', cursive;
+            font-size: 0.6rem;
+            box-shadow: 
+                0 4px 0 #1e40af,
+                0 6px 15px rgba(0, 0, 0, 0.5);
+            transition: all 0.2s ease;
+        }
+        
+        .level-badge:hover {
+            transform: translateY(2px);
+            box-shadow: 
+                0 2px 0 #1e40af,
+                0 4px 10px rgba(0, 0, 0, 0.5);
+        }
+        
+        /* Dropdown Arcade Style */
+        .dropdown-menu {
+            background: linear-gradient(180deg, #1f2937 0%, #111827 100%);
+            border: 4px solid var(--eco-green);
+            border-radius: 0;
+            box-shadow: 
+                0 0 20px rgba(34, 197, 94, 0.3),
+                8px 8px 0 rgba(0, 0, 0, 0.3);
+            padding: 0.5rem;
+        }
+        
+        .dropdown-item {
+            color: #e2e8f0 !important;
+            border-radius: 0;
+            padding: 0.7rem 1rem;
+            border: 2px solid transparent;
+            transition: all 0.2s ease;
+            font-weight: 600;
+        }
+        
+        .dropdown-item:hover {
+            background: rgba(34, 197, 94, 0.2) !important;
+            color: var(--eco-green) !important;
+            border: 2px solid var(--eco-green);
+            transform: translateX(5px);
+        }
+        
+        .dropdown-divider {
+            border-color: var(--eco-green);
+            opacity: 0.3;
+        }
+        
+        /* Arcade Button */
+        .btn-eco {
+            font-family: 'Press Start 2P', cursive;
+            font-size: 0.6rem;
+            background: linear-gradient(180deg, var(--eco-green) 0%, var(--eco-dark-green) 100%);
+            border: 3px solid #000;
+            border-radius: 0;
+            color: #000;
+            font-weight: bold;
+            padding: 0.7rem 1.5rem;
+            box-shadow: 
+                0 4px 0 #15803d,
+                0 6px 15px rgba(0, 0, 0, 0.5);
+            transition: all 0.1s ease;
+        }
+        
+        .btn-eco:hover {
+            background: linear-gradient(180deg, #16a34a, #15803d);
+            transform: translateY(2px);
+            box-shadow: 
+                0 2px 0 #15803d,
+                0 4px 10px rgba(0, 0, 0, 0.5);
+            color: #000;
+        }
+        
+        .btn-eco:active {
+            transform: translateY(4px);
+            box-shadow: 
+                0 0 0 #15803d,
+                0 2px 5px rgba(0, 0, 0, 0.5);
+        }
+        
+        /* Eco Card Arcade Style */
+        .eco-card {
+            background: linear-gradient(180deg, #2d3748 0%, #1a202c 100%);
+            border: 4px solid #4a5568;
+            border-radius: 0;
+            box-shadow: 
+                8px 8px 0 rgba(0, 0, 0, 0.3),
+                0 0 30px rgba(0, 0, 0, 0.5);
+            transition: all 0.2s ease;
+            position: relative;
+        }
+        
+        .eco-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, 
+                transparent 0%,
+                var(--eco-green) 20%,
+                var(--eco-yellow) 40%,
+                #ef4444 60%,
+                var(--eco-blue) 80%,
+                transparent 100%
+            );
+        }
+        
+        .eco-card:hover {
+            transform: translate(-4px, -4px);
+            box-shadow: 
+                12px 12px 0 rgba(0, 0, 0, 0.3),
+                0 0 40px rgba(34, 197, 94, 0.4);
+            border-color: var(--eco-green);
+        }
+        
+        /* Progress Bar Pixel Style */
+        .progress-eco {
+            height: 30px;
+            border: 3px solid #000;
+            border-radius: 0;
+            background: #1f2937;
+            overflow: hidden;
+            box-shadow: inset 0 4px 8px rgba(0, 0, 0, 0.5);
+        }
+        
+        .progress-bar-eco {
+            background: 
+                repeating-linear-gradient(
+                    90deg,
+                    var(--eco-green) 0px,
+                    var(--eco-green) 10px,
+                    var(--eco-dark-green) 10px,
+                    var(--eco-dark-green) 20px
+                );
+            box-shadow: 0 0 10px rgba(34, 197, 94, 0.5);
+            transition: width 0.6s ease;
+        }
+        
+        /* Messages Arcade Style */
+        .alert {
+            border: 4px solid #000;
+            border-radius: 0;
+            font-weight: 600;
+            box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.3);
+        }
+        
+        .alert-success {
+            background: linear-gradient(135deg, var(--eco-green), #16a34a);
+            color: #000;
+            border-color: var(--eco-yellow);
+        }
+        
+        .alert-danger {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: #fff;
+            border-color: #000;
+        }
+        
+        .alert-warning {
+            background: linear-gradient(135deg, var(--eco-yellow), #f59e0b);
+            color: #000;
+            border-color: #000;
+        }
+        
+        .alert-info {
+            background: linear-gradient(135deg, var(--eco-blue), #2563eb);
+            color: #fff;
+            border-color: #000;
+        }
+        
+        /* Achievement Badge */
+        .achievement-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #ffd700, #ffed4e);
+            color: #000;
+            padding: 0.5rem 1rem;
+            border: 3px solid #000;
+            border-radius: 0;
+            font-family: 'Press Start 2P', cursive;
+            font-size: 0.6rem;
+            margin: 0.2rem;
+            box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.3);
+            transition: all 0.2s ease;
+        }
+        
+        .achievement-badge:hover {
+            transform: translateY(-3px);
+            box-shadow: 4px 7px 0 rgba(0, 0, 0, 0.3);
+        }
+        
+        /* Chat Bubbles Pixel Style */
         .chat-bubble {
             max-width: 70%;
-            padding: 12px 16px;
-            border-radius: 18px;
-            margin-bottom: 10px;
+            padding: 1rem;
+            border: 3px solid #000;
+            border-radius: 0;
+            margin-bottom: 1rem;
+            font-weight: 600;
+            box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.3);
         }
         
         .chat-bubble.user {
-            background: var(--eco-blue);
+            background: linear-gradient(135deg, var(--eco-blue), #2563eb);
             color: white;
             margin-left: auto;
+            border-color: #1e40af;
         }
         
         .chat-bubble.bot {
-            background: #f8f9fa;
-            color: #333;
-            border: 1px solid #dee2e6;
+            background: linear-gradient(135deg, #f8f9fa, #e2e8f0);
+            color: #000;
+            border-color: var(--eco-green);
         }
         
+        /* Sidebar Arcade */
+        .sidebar {
+            background: linear-gradient(180deg, #1f2937 0%, #111827 100%);
+            border: 4px solid var(--eco-green);
+            border-radius: 0;
+            box-shadow: 
+                0 0 30px rgba(34, 197, 94, 0.3),
+                inset 0 0 30px rgba(0, 0, 0, 0.5);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        /* Footer Arcade */
         .footer {
-            background: var(--eco-dark-green);
-            color: white;
-            padding: 40px 0;
-            margin-top: 50px;
+            background: linear-gradient(180deg, #0f2819 0%, #0a1810 100%);
+            color: #e2e8f0;
+            padding: 3rem 0 1rem;
+            margin-top: 4rem;
+            border-top: 6px solid var(--eco-green);
+            box-shadow: 
+                0 -4px 0 var(--eco-dark-green),
+                inset 0 0 50px rgba(0, 0, 0, 0.5);
+            position: relative;
+        }
+        
+        .footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                repeating-linear-gradient(
+                    0deg,
+                    rgba(34, 197, 94, 0.03) 0px,
+                    transparent 2px,
+                    transparent 4px
+                );
+            pointer-events: none;
+        }
+        
+        .footer h5, .footer h6 {
+            font-family: 'Press Start 2P', cursive;
+            font-size: 0.8rem;
+            color: var(--eco-green);
+            margin-bottom: 1.5rem;
+            text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.5);
+        }
+        
+        .footer a {
+            color: #94a3b8;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            display: inline-block;
+            padding: 0.3rem 0;
+        }
+        
+        .footer a:hover {
+            color: var(--eco-green);
+            transform: translateX(5px);
+        }
+        
+        .footer .fab {
+            transition: all 0.2s ease;
+            color: #94a3b8;
+            filter: drop-shadow(2px 2px 0 rgba(0, 0, 0, 0.5));
+        }
+        
+        .footer .fab:hover {
+            color: var(--eco-green);
+            transform: translateY(-5px) scale(1.1);
+        }
+        
+        .footer hr {
+            border-color: var(--eco-green);
+            opacity: 0.3;
+            border-width: 2px;
+        }
+        
+        /* Scrollbar Arcade Style */
+        ::-webkit-scrollbar {
+            width: 12px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #1a1a1a;
+            border-left: 2px solid var(--eco-green);
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(180deg, var(--eco-green), var(--eco-dark-green));
+            border: 2px solid #000;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(180deg, #16a34a, #15803d);
+        }
+        
+        /* Pixel Animation */
+        @keyframes pixelate {
+            0%, 100% { transform: translate(0, 0); }
+            25% { transform: translate(1px, -1px); }
+            50% { transform: translate(-1px, 1px); }
+            75% { transform: translate(1px, 1px); }
+        }
+        
+        @keyframes blink {
+            0%, 49% { opacity: 1; }
+            50%, 100% { opacity: 0; }
+        }
+        
+        .pixel-icon {
+            filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.5));
+        }
+        
+        /* Button Close for Alerts */
+        .btn-close {
+            filter: invert(1);
+            opacity: 1;
+        }
+        
+        /* Navbar Toggler */
+        .navbar-toggler {
+            border: 3px solid var(--eco-green);
+            border-radius: 0;
+            padding: 0.5rem;
+        }
+        
+        .navbar-toggler-icon {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='%2322c55e' stroke-linecap='round' stroke-miterlimit='10' stroke-width='3' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
         }
     </style>
     
@@ -165,10 +488,10 @@
 </head>
 <body>
     <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+    <nav class="navbar navbar-expand-lg navbar-dark">
         <div class="container">
             <a class="navbar-brand" href="{% url 'home' %}">
-                <i class="fas fa-leaf"></i> EcoLearning
+                 ECO
             </a>
             
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -179,67 +502,67 @@
                 <ul class="navbar-nav me-auto">
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'quizzes:categories' %}">
-                            <i class="fas fa-brain"></i> Quizzes
+                             QUIZ
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'eco_tasks:categories' %}">
-                            <i class="fas fa-tasks"></i> Eco-Tasks
+                            TASKS
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'leaderboards:home' %}">
-                            <i class="fas fa-trophy"></i> Leaderboards
+                           RANKS
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'rewards:store' %}">
-                            <i class="fas fa-gift"></i> Rewards
+                            SHOP
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'chatbot:chat' %}">
-                            <i class="fas fa-robot"></i> EcoBot
+                           BOT
                         </a>
                     </li>
                 </ul>
                 
                 <ul class="navbar-nav">
                     {% if user.is_authenticated %}
-                        <li class="nav-item dropdown">
+                        <li class="nav-item d-flex align-items-center">
                             <span class="token-badge me-2">
                                 <i class="fas fa-coins"></i> {{ user.total_eco_tokens }}
                             </span>
                             <span class="level-badge me-2">
-                                <i class="fas fa-star"></i> Level {{ user.level }}
+                                <i class="fas fa-star"></i> L{{ user.level }}
                             </span>
                         </li>
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
-                                <i class="fas fa-user"></i> {{ user.username }}
+                                <i class="fas fa-user pixel-icon"></i> {{ user.username|upper }}
                             </a>
-                            <ul class="dropdown-menu">
+                            <ul class="dropdown-menu dropdown-menu-end">
                                 <li><a class="dropdown-item" href="{% url 'accounts:profile' %}">
-                                    <i class="fas fa-user-circle"></i> Profile
+                                    <i class="fas fa-user-circle"></i> PROFILE
                                 </a></li>
                                 <li><a class="dropdown-item" href="{% url 'accounts:dashboard' %}">
-                                    <i class="fas fa-chart-line"></i> Dashboard
+                                    <i class="fas fa-chart-line"></i> DASHBOARD
                                 </a></li>
                                 <li><a class="dropdown-item" href="{% url 'rewards:my_rewards' %}">
-                                    <i class="fas fa-award"></i> My Rewards
+                                    <i class="fas fa-award"></i> MY REWARDS
                                 </a></li>
                                 <li><hr class="dropdown-divider"></li>
                                 <li><a class="dropdown-item" href="{% url 'accounts:logout' %}">
-                                    <i class="fas fa-sign-out-alt"></i> Logout
+                                    <i class="fas fa-sign-out-alt"></i> LOGOUT
                                 </a></li>
                             </ul>
                         </li>
                     {% else %}
                         <li class="nav-item">
-                            <a class="nav-link" href="{% url 'accounts:login' %}">Login</a>
+                            <a class="nav-link" href="{% url 'accounts:login' %}">LOGIN</a>
                         </li>
                         <li class="nav-item">
-                            <a class="btn btn-eco ms-2" href="{% url 'accounts:register' %}">Join Now</a>
+                            <a class="btn btn-eco ms-2" href="{% url 'accounts:register' %}">JOIN</a>
                         </li>
                     {% endif %}
                 </ul>
@@ -252,7 +575,7 @@
         <div class="container mt-3">
             {% for message in messages %}
                 <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-                    {{ message }}
+                    <strong>{{ message.tags|upper }}!</strong> {{ message }}
                     <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                 </div>
             {% endfor %}
@@ -266,24 +589,24 @@
 
     <!-- Footer -->
     <footer class="footer">
-        <div class="container">
+        <div class="container position-relative">
             <div class="row">
-                <div class="col-md-4">
-                    <h5><i class="fas fa-leaf"></i> EcoLearning</h5>
-                    <p>Making environmental education engaging and action-driven through gamification and real-world impact.</p>
+                <div class="col-md-4 mb-4">
+                    <h5><i class="fas fa-leaf"></i> ECOLEARNING</h5>
+                    <p style="color: #94a3b8;">Making environmental education engaging through retro-style gaming and real-world impact missions!</p>
                 </div>
-                <div class="col-md-4">
-                    <h6>Quick Links</h6>
+                <div class="col-md-4 mb-4">
+                    <h6>GAME MODES</h6>
                     <ul class="list-unstyled">
-                        <li><a href="{% url 'quizzes:categories' %}" class="text-light">Quizzes</a></li>
-                        <li><a href="{% url 'eco_tasks:categories' %}" class="text-light">Eco-Tasks</a></li>
-                        <li><a href="{% url 'leaderboards:home' %}" class="text-light">Leaderboards</a></li>
-                        <li><a href="{% url 'rewards:store' %}" class="text-light">Rewards</a></li>
+                        <li><a href="{% url 'quizzes:categories' %}">▸ Quiz Battle</a></li>
+                        <li><a href="{% url 'eco_tasks:categories' %}">▸ Eco Quest</a></li>
+                        <li><a href="{% url 'leaderboards:home' %}">▸ Rankings</a></li>
+                        <li><a href="{% url 'rewards:store' %}">▸ Loot Shop</a></li>
                     </ul>
                 </div>
-                <div class="col-md-4">
-                    <h6>Connect</h6>
-                    <p>Join our community of eco-learners making a difference!</p>
+                <div class="col-md-4 mb-4">
+                    <h6>JOIN US</h6>
+                    <p style="color: #94a3b8;">Team up with eco-warriors worldwide!</p>
                     <div>
                         <i class="fab fa-twitter fa-2x me-3"></i>
                         <i class="fab fa-facebook fa-2x me-3"></i>
@@ -293,7 +616,9 @@
             </div>
             <hr class="my-4">
             <div class="text-center">
-                <p>&copy; 2024 EcoLearning Platform. Making the world greener, one learner at a time. 🌱</p>
+                <p class="retro-text" style="font-size: 0.6rem; color: #94a3b8; line-height: 1.8;">
+                    &copy; 2024 ECOLEARNING • SAVING THE WORLD ONE PIXEL AT A TIME 🌱
+                </p>
             </div>
         </div>
     </footer>
